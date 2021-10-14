@@ -1,0 +1,11 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 21/05/2021, 04:24:41 PM
+    Author     : hvelazquez
+*/
+
+table.dataTable tr.dtrg-group td{background-color:#e0e0e0}table.dataTable tr.dtrg-group.dtrg-level-0 td{font-weight:bold}table.dataTable tr.dtrg-group.dtrg-level-1 td,table.dataTable tr.dtrg-group.dtrg-level-2 td{background-color:#f0f0f0;padding-top:0.25em;padding-bottom:0.25em;padding-left:2em;font-size:0.9em}table.dataTable tr.dtrg-group.dtrg-level-2 td{background-color:#f3f3f3}
