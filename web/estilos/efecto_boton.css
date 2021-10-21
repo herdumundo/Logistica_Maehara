@@ -75,6 +75,24 @@
 
 
 
+#container {
+    width: 2000px;
+     margin: auto;
+}
+#first {
+    width: 500px;
+    float: left;
+    height: 700px;
+ }
+#second {
+    width: 200px;
+    float: right;
+    height: 700px;
+ }
+#clear {
+    clear: both;
+}
+    
 
 
 

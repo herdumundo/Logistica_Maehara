@@ -28,8 +28,12 @@
     <a style="font-weight: bold;color:black">CARROS CARGADOS:</a><input type="text" disabled id="txt_cargados" style="font-weight: bold;color:black" value="0" >
  
     <br> <br>
+    
     <div id="div_grilla"  class="table_wrapper" >
-
+        <div id="container">
+            <div id="first"></div>
+            <div id="second"></div>
+         </div>
 
     </div>
 
@@ -37,3 +41,13 @@
 
 
 </div>
+    
+    <style>
+   
+ td.something {
+  width: 200px;
+}
+       .bg1 {
+  	background-color: blue;
+  }   
+    </style>

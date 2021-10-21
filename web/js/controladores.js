@@ -22,7 +22,8 @@
             },           
             success: function (res) 
             {
-                $("#div_grilla").html(res.grilla);
+                $("#first").html(res.grilla  );
+                $("#second").html(res.grilla_mixto);
                //  $('#contenido_principal').html("");    
 
                 
@@ -412,7 +413,7 @@
                 {
                     valores = valores + ',' + arr;
                 }
-                c++;
+                c++; 
             }
             if(ccha_cant_acep>0)
             {
@@ -810,3 +811,18 @@
        
         
    }  
+   
+   function seleccionar_mixtos(cod_carrito)
+   {
+        if($("#"+cod_carrito).val()=="SELECCIONE"){
+            
+              $("#"+cod_carrito).removeClass('btn-dark ').addClass(' btn-primary  bg1 ')
+             $("#"+cod_carrito).val("SELECCIONADO");
+                          
+
+        }
+        else {
+            $("#"+cod_carrito).removeClass(' btn-primary bg1').addClass('btn-dark ')
+             $("#"+cod_carrito).val("SELECCIONE");
+        }
+   }

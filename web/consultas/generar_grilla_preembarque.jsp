@@ -4,7 +4,8 @@
     Author     : hvelazquez
 --%>
 
- <%@page import="clases.controles"%>
+ <%@page import="org.json.JSONArray"%>
+<%@page import="clases.controles"%>
 <%@page import="clases.fuentedato"%>
 <%@page import="org.json.JSONObject"%>
 <%@page import="java.sql.ResultSet"%>
@@ -18,8 +19,7 @@
 <%     
     clases.controles.connectarBD();
     fuente.setConexion(clases.controles.connect);
-    JSONObject ob = new JSONObject();
-    ob=new JSONObject();
+ 
     String grilla_html="";
     String cabecera=" <table id='tb_preembarque' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
@@ -49,7 +49,7 @@
             + " <th style='color: #fff; background: green;'>Invo</th>      <th style='color: #fff; background: green;'>Cant</th></tr>"
             + "</thead> <tbody >";
     int cont_fila=0;
-    ResultSet rs;
+    ResultSet rs,rs2;
      rs = fuente.obtenerDato(" select *,convert(varchar,fecha_puesta,103)as fecha_format from  v_mae_preembarque    order by 1,2  ");
        while(rs.next())
         {
@@ -137,12 +137,59 @@
                    + "<td  class='text-center'  ><b>"+rs.getString(15)+"</b></td>       <td "+edit13+"      class='text-center celda_editable single_line'  >   0   </td>"
                    + "<td class='text-center'   ><b>"+rs.getString(16)+"</b></td>       <td "+edit14+"      class='text-center celda_editable single_line'  >   0   </td>"
                    + "<td class='text-center'   ><b>"+rs.getString(17)+"</b></td>       <td "+edit15+"      class='text-center celda_editable single_line'  >   0   </td> "
-                   + " </tr>";
+        + " </tr>";
           cont_fila++; 
         }
+       
+       
+       
+       
+       String cabecera_mixto=" <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
+            + "<thead>"
+               + " <tr>"
+            + "<th colspan='6'  style='color: #fff; background: gray;'  class='text-center'  ><b>CARROS MIXTOS</b></th>  </tr>"
+           
+              
+               
+            + "<tr>"
+            + "<th  style='color: #fff; background: black;'>CARRO</th>      "
+               + "<th style='color: #fff; background: green;' >AREA</th>"
+               + "<th style='color: #fff; background: green;' >PUESTA</th>"
+               + "<th style='color: #fff; background: green;' >DETALLE CAJONES</th>"
+               + "<th style='color: #fff; background: green;' >ACCION</th>"
+             + "</tr>"
+            + "</thead> <tbody >";
+     String grilla_html2 ="";  
+        rs2 = fuente.obtenerDato("  SELECT cod,clasificadora_ACTUAL,convert(varchar,FECHA_PUESTA,103)AS FECHA_PUESTA,  stuff(( select   '  '+  [tipo_huevo] + ':'+convert(varchar,[cantidad])   from [v_mae_stock_linea_mixtos] with (nolock) "
+                + "                 where cod_carrito =  cod for XML path('') ),1,1,'')as fecha_involucrada "
+                + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA FROM v_mae_stock_linea_cajones12  ) T ORDER BY 2,3");
+       while(rs2.next())
+        {
+            grilla_html2=grilla_html2+ "<tr   >" + "<td  >"+rs2.getString(1 )+"</td>"+  "<td   >"+rs2.getString(2)+"</td>"+   "<td   >"+rs2.getString(3)+"</td>"+ "<td class='something' >"+rs2.getString(4)+"</td>"+ " <td><input type='button' value='SELECCIONE' class='btn btn-dark btn-sm'title='SELECCIONAR'   id='"+rs2.getString(1 )+"' onclick='seleccionar_mixtos( "+rs2.getString(1 )+" )' >  </td> <tr /  >";
+        }
+       
+       
+
+       
+       
+       
+       
+       
+       
+       
+       
         
         clases.controles.DesconnectarBD();
+        JSONObject ob = new JSONObject();
+        ob=new JSONObject();
+        JSONArray array_general = new JSONArray();         
+
+             
+          
+        
+        
         ob.put("grilla",cabecera+grilla_html+"</tbody></table>");
+        ob.put("grilla_mixto",cabecera_mixto+grilla_html2+"</tbody></table>");
         out.print(ob);  %>
         
          

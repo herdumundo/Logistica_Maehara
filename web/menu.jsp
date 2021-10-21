@@ -21,7 +21,7 @@
         <link href="lib/themes/default.css?v=1.0.2" rel="stylesheet" id="theme_base" />
         <link href="lib/themes/default.date.css?v=1.0.2" rel="stylesheet" id="theme_date" />
         <link href="estilos/css/colores.css" rel="stylesheet" type="text/css"/>
-        <link href="estilos/css/parpadeo.css" rel="stylesheet" type="text/css"/>
+        <link href="estilos/css/parpadeo.css?v=1.1.0" rel="stylesheet" type="text/css"/>
         <link href="estilos/efecto_boton.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/dataTables.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/select.dataTables.css" rel="stylesheet" type="text/css"/>
