@@ -21,19 +21,20 @@
     String id_camion        = request.getParameter("id_camion");
     String cantidad_total   = request.getParameter("cantidad_total");
     String array_pedido     = request.getParameter("contenido");
-    String contenido_mixto_INSERT     = request.getParameter("contenido_mixto_INSERT");
-   
+    String id_pedido     = request.getParameter("id_pedido");
+    
     String mensaje="";
     int tipo_respuesta=0;    
     try 
     {
         clases.controles.connect.setAutoCommit(false);
         CallableStatement  callableStatement=null;   
-        callableStatement = clases.controles.connect.prepareCall("{call [mae_log_ptc_pedidos_insert](?,?,?,?,?,?)}");
-        callableStatement .setInt(1,        Integer.parseInt(cantidad_total) );
-        callableStatement .setString(2,        id_camion  );
-        callableStatement .setInt(3,        Integer.parseInt(id_usuario) );
-        callableStatement .setString(4,     array_pedido );
+        callableStatement = clases.controles.connect.prepareCall("{call [mae_log_ptc_pedidos_editar](?,?,?,?,?,?,?)}");
+        callableStatement .setInt(      1,      Integer.parseInt(cantidad_total) );
+        callableStatement .setString(   2,      id_camion  );
+        callableStatement .setInt(      3,      Integer.parseInt(id_usuario) );
+        callableStatement .setString(   4,      array_pedido );
+        callableStatement .setString(   5,      id_pedido );
  
         callableStatement.registerOutParameter("estado_registro", java.sql.Types.INTEGER);
         callableStatement.registerOutParameter("mensaje", java.sql.Types.VARCHAR);

@@ -34,6 +34,8 @@
         HttpSession sesionOk = request.getSession();
         sesionOk.setAttribute("id_usuario",rs.getString("cod_usuario"));
         sesionOk.setAttribute("nombre",rs.getString("nombre"));
+        sesionOk.setAttribute("usuario",rs.getString("usuario"));
+        sesionOk.setAttribute("area",rs.getString("clasificadora"));
         
         response.sendRedirect("../menu.jsp"); 
         

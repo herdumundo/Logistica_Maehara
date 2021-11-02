@@ -136,8 +136,7 @@
     <script src="lib/picker.js?v=1.0.0"></script>
     <script src="lib/picker.date.js?v=1.1.0"></script>
     <script src="lib/legacy.js?v=1.1.0"></script>
-     <script src="js/grilla.js" type="text/javascript"></script>
-     
+    <script src="js/grilla.js" type="text/javascript"></script>
      
     <script src="js/multi_select.js" type="text/javascript"></script>
     <script src="estilos/js/jquery-ui.min.js" type="text/javascript"></script>
@@ -146,7 +145,7 @@
     <script src="js/jquery.loadingModal.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <script src="js/controladores.js" type="text/javascript"></script>
-
+    <script src="js/controladores_viajes.js" type="text/javascript"></script>
 
 </body>
 

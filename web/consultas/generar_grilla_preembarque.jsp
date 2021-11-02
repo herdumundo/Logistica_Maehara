@@ -50,7 +50,7 @@
             + "</thead> <tbody >";
     int cont_fila=0;
     ResultSet rs,rs2;
-     rs = fuente.obtenerDato(" select *,convert(varchar,fecha_puesta,103)as fecha_format from  v_mae_preembarque    order by 1,2  ");
+     rs = fuente.obtenerDato(" SELECT * FROM ( select *,convert(varchar,fecha_puesta,103)as fecha_format from  v_mae_preembarque ) T WHERE tipo_huevo NOT IN ('-')   order by 1,2  ");
        while(rs.next())
         {
             String edit1="";//contenteditable='true'
@@ -141,16 +141,10 @@
           cont_fila++; 
         }
        
-       
-       
-       
-       String cabecera_mixto=" <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
+              String cabecera_mixto=" <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
                + " <tr>"
             + "<th colspan='6'  style='color: #fff; background: gray;'  class='text-center'  ><b>CARROS MIXTOS</b></th>  </tr>"
-           
-              
-               
             + "<tr>"
             + "<th  style='color: #fff; background: black;'>CARRO</th>      "
                + "<th style='color: #fff; background: green;' >AREA</th>"
@@ -160,34 +154,20 @@
              + "</tr>"
             + "</thead> <tbody >";
      String grilla_html2 ="";  
-        rs2 = fuente.obtenerDato("  SELECT cod,clasificadora_ACTUAL,convert(varchar,FECHA_PUESTA,103)AS FECHA_PUESTA,  stuff(( select   '  '+  [tipo_huevo] + ':'+convert(varchar,[cantidad])   from [v_mae_stock_linea_mixtos] with (nolock) "
+        rs2 = fuente.obtenerDato("  SELECT cod,clasificadora_ACTUAL,convert(varchar,FECHA_PUESTA,103)AS FECHA_PUESTA,  stuff(( select   ','+  [tipo_huevo] + ':'+convert(varchar,[cantidad])   from [v_mae_stock_linea_mixtos] with (nolock) "
                 + "                 where cod_carrito =  cod for XML path('') ),1,1,'')as fecha_involucrada "
-                + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA FROM v_mae_stock_linea_cajones12  ) T ORDER BY 2,3");
+                + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA FROM v_mae_stock_linea_cajones12 WHERE cod_carrito not in (select cod_carrito from  mae_log_ptc_det_pedidos where estado=1 and u_medida='MIXTO') ) T ORDER BY 2,3");
        while(rs2.next())
         {
-            grilla_html2=grilla_html2+ "<tr   >" + "<td  >"+rs2.getString(1 )+"</td>"+  "<td   >"+rs2.getString(2)+"</td>"+   "<td   >"+rs2.getString(3)+"</td>"+ "<td class='something' >"+rs2.getString(4)+"</td>"+ " <td><input type='button' value='SELECCIONE' class='btn btn-dark btn-sm'title='SELECCIONAR'   id='"+rs2.getString(1 )+"' onclick='seleccionar_mixtos( "+rs2.getString(1 )+" )' >  </td> <tr /  >";
+            grilla_html2=grilla_html2+ "<tr>" + "<td  >"+rs2.getString(1 )+"</td>"+  "<td   >"+rs2.getString(2)+"</td>"+   "<td   >"+rs2.getString(3)+"</td>"+ 
+                    "<td class='something' >"+rs2.getString(4)+"</td>"+ " <td><div class='btn btn-dark btn-sm' id='"+rs2.getString(1 )+"' onclick='seleccionar_mixtos( "+rs2.getString(1 )+" )'>SELECCIONE</div>   </td> </tr>";
         }
        
-       
-
-       
-       
-       
-       
-       
-       
-       
-       
-        
         clases.controles.DesconnectarBD();
         JSONObject ob = new JSONObject();
         ob=new JSONObject();
         JSONArray array_general = new JSONArray();         
 
-             
-          
-        
-        
         ob.put("grilla",cabecera+grilla_html+"</tbody></table>");
         ob.put("grilla_mixto",cabecera_mixto+grilla_html2+"</tbody></table>");
         out.print(ob);  %>
