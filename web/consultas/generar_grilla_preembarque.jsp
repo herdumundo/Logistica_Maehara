@@ -21,7 +21,18 @@
     fuente.setConexion(clases.controles.connect);
  
     String grilla_html="";
-    String cabecera=" <table id='tb_preembarque' class='table table-bordered table-hover' style='width:100%'>"
+    String cabecera="<table><thead><tr><th>TIPO</th><th>PEDIDO</th><th>CARGADOS</th><tbody >"
+            + "<tr><td>A</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_a'   ></td><td><input type='text' style='font-weight: bold; color: black;' value='0' readonly  id='txt_tipo_ac'   ></td></tr>"
+            + "<tr><td>B</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_b'    ></td><td><input type='text'     style='font-weight: bold; color: black;'  value='0' readonly  id='txt_tipo_bc'  ></td></tr>"
+            + "<tr><td>C</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_c'    ></td><td><input type='text'  style='font-weight: bold; color: black;'  value='0'  readonly  id='txt_tipo_cc'  ></td></tr>"
+            + "<tr><td>D</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_d'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0'  readonly  id='txt_tipo_dc'  ></td></tr>"
+            + "<tr><td>S</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_s'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0' readonly   id='txt_tipo_sc'  ></td></tr>"
+            + "<tr><td>J</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_j'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_jc'  ></td></tr>"
+            + "<tr><td>MIXTO</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_mixto'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_mixtoc'  ></td></tr>"
+            + "</tbody > </tr></thead> </table> <div id='div_grilla'  class='table_wrapper' >"
+            + "<div id='container' style='width: 2000px; margin: auto;'>"
+            + "<div id='first' style=' width: 1800px; float: left; height: 700px;'> "
+            + "<table id='tb_preembarque' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
               + " <tr>"
             + "<th rowspan='2'  style='color: #fff; background: gray;'><b>Fecha puesta</b></th>  "
@@ -49,8 +60,9 @@
             + " <th style='color: #fff; background: green;'>Invo</th>      <th style='color: #fff; background: green;'>Cant</th></tr>"
             + "</thead> <tbody >";
     int cont_fila=0;
+    int cont_id=0;
     ResultSet rs,rs2;
-     rs = fuente.obtenerDato(" SELECT * FROM ( select *,convert(varchar,fecha_puesta,103)as fecha_format from  v_mae_preembarque ) T WHERE tipo_huevo NOT IN ('-')   order by 1,2  ");
+     rs = fuente.obtenerDato(" SELECT * FROM ( select *,convert(varchar,fecha_puesta,103)as fecha_format from  v_mae_preembarque  with(nolock) ) T WHERE tipo_huevo NOT IN ('-')   order by 1,2  ");
        while(rs.next())
         {
             String edit1="";//contenteditable='true'
@@ -117,31 +129,124 @@
                 if(rs.getInt(17)>0){
               edit15="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
             }
-              
+              String fecha_form=rs.getString(19).replaceAll("/", "");
            grilla_html=grilla_html+
-           "<tr   >"
+           "<tr class='item-model-number'  >"
                    + "<td   >"+rs.getString(19 )+"</td>"
-                   + "<td width='35'  class='text-center '> "+rs.getString(2)+" </td>"                                                                                  
-                   + "<td  class='text-center'  ><b> "+rs.getString(3)+"    </b></td>   <td "+edit1+"      class='text-center celda_editable single_line'  >   0 </td>"
-                   + "<td  class='text-center'  ><b>"+rs.getString(4)+"   </b></td>     <td "+edit2+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(5)+"</b></td>        <td "+edit3+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(6)+"</b></td>        <td "+edit4+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(7)+"</b></td>        <td "+edit5+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(8)+"</b></td>        <td "+edit6+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(9)+"</b></td>        <td "+edit7+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(10)+"</b></td>       <td "+edit8+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(11)+"</b></td>       <td "+edit9+"       class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(12)+"</b></td>       <td "+edit10+"      class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(13)+"</b></td>       <td "+edit11+"      class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(14)+"</b></td>       <td "+edit12+"      class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td  class='text-center'  ><b>"+rs.getString(15)+"</b></td>       <td "+edit13+"      class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(16)+"</b></td>       <td "+edit14+"      class='text-center celda_editable single_line'  >   0   </td>"
-                   + "<td class='text-center'   ><b>"+rs.getString(17)+"</b></td>       <td "+edit15+"      class='text-center celda_editable single_line'  >   0   </td> "
+                   + "<td width='35'  class='text-center '> "+rs.getString(2)+" </td>"          ;                                                                        
+                    
+                    cont_id++;
+                    
+                    String id_td=String.valueOf(cont_id);
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(3)>0){
+                        id_td="ID";
+                    }
+                    
+                    grilla_html=grilla_html+ "<td  style='font-weight:bold' class='text-center "+ "LIB_"+id_td+"_"+fecha_form+"_CCHA_"+rs.getString(2)+"'  >"+rs.getString(3)+"    </td>   <td "+edit1+"      class='text-center celda_editable single_line'  >   0 </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(4)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html + "<td  style='font-weight:bold'  class='text-center "+ "ACEP_"+id_td+"_"+fecha_form+"_CCHA_"+rs.getString(2)+"' >     "+rs.getString(4)+"    </td>     <td "+edit2+"       class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++; 
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(5)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html + "<td style='font-weight:bold'   class='text-center "+ "INVO_"+id_td+"_"+fecha_form+"_CCHA_"+rs.getString(2)+"' >     "+rs.getString(5)+" </td>        <td "+edit3+"       class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(6)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html  + "<td style='font-weight:bold'   class='text-center "+ "LDO_"+id_td+"_"+fecha_form+"_CCHA_"+rs.getString(2)+"'  >    "+rs.getString(6)+" </td>        <td "+edit4+"       class='text-center celda_editable single_line'  >   0   </td>";
+                   
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(7)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html  + "<td  style='font-weight:bold'  class='text-center "+ "LIB_"+id_td+"_"+fecha_form+"_CCHB_"+rs.getString(2)+"'  >    "+rs.getString(7)+" </td>        <td "+edit5+"       class='text-center celda_editable single_line'  >   0   </td>";
+                   
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(8)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html  + "<td style='font-weight:bold'   class='text-center "+ "ACEP_"+id_td+"_"+fecha_form+"_CCHB_"+rs.getString(2)+"' >    "+rs.getString(8)+" </td>        <td "+edit6+"       class='text-center celda_editable single_line'  >   0   </td>";
+                   
+                    cont_id++; 
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(9)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html + "<td  style='font-weight:bold'  class='text-center "+ "INVO_"+id_td+"_"+fecha_form+"_CCHB_"+rs.getString(2)+"' >     "+rs.getString(9)+" </td>        <td "+edit7+"       class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++; 
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(10)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html  + "<td style='font-weight:bold'   class='text-center "+ "LDO_"+id_td+"_"+fecha_form+"_CCHB_"+rs.getString(2)+"'  >    "+rs.getString(10)+" </td>       <td "+edit8+"       class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(11)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html  + "<td style='font-weight:bold'   class='text-center "+ "LIB_"+id_td+"_"+fecha_form+"_CCHH_"+rs.getString(2)+"'  >    "+rs.getString(11)+" </td>       <td "+edit9+"       class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(12)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html   + "<td  style='font-weight:bold'  class='text-center "+ "ACEP_"+id_td+"_"+fecha_form+"_CCHH_"+rs.getString(2)+"' >   "+rs.getString(12)+" </td>       <td "+edit10+"      class='text-center celda_editable single_line'  >   0   </td>";
+                   
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(13)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html   + "<td style='font-weight:bold'   class='text-center  "+ "INVO_"+id_td+"_"+fecha_form+"_CCHH_"+rs.getString(2)+"' >    "+rs.getString(13)+" </td>       <td "+edit11+"      class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(14)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html   + "<td  style='font-weight:bold'  class='text-center "+ "LDO_"+id_td+"_"+fecha_form+"_CCHH_"+rs.getString(2)+"'  >    "+rs.getString(14)+" </td>       <td "+edit12+"      class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(15)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html    + "<td style='font-weight:bold'   class='text-center "+ "LIB_"+id_td+"_"+fecha_form+"_OVO_"+rs.getString(2)+"'  >    "+rs.getString(15)+" </td>       <td "+edit13+"      class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(16)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html   + "<td  style='font-weight:bold'  class='text-center "+ "ACEP_"+id_td+"_"+fecha_form+"_OVO_"+rs.getString(2)+"' >    "+rs.getString(16)+" </td>       <td "+edit14+"      class='text-center celda_editable single_line'  >   0   </td>";
+                    
+                    cont_id++;
+                    id_td=String.valueOf(cont_id);
+                    if(rs.getInt(17)>0){
+                        id_td="ID";
+                    }
+                    grilla_html=grilla_html   + "<td style='font-weight:bold'   class='text-center  "+ "INVO_"+id_td+"_"+fecha_form+"_OVO_"+rs.getString(2)+"'  >   "+rs.getString(17)+" </td>       <td "+edit15+"      class='text-center celda_editable single_line'  >   0   </td> "
         + " </tr>";
           cont_fila++; 
         }
        
-              String cabecera_mixto=" <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
+              String cabecera_mixto="<div id='second' style=' width: 200px;  float: right;  height: 700px;'> <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
                + " <tr>"
             + "<th colspan='6'  style='color: #fff; background: gray;'  class='text-center'  ><b>CARROS MIXTOS</b></th>  </tr>"
@@ -152,24 +257,28 @@
                + "<th style='color: #fff; background: green;' >DETALLE CAJONES</th>"
                + "<th style='color: #fff; background: green;' >ACCION</th>"
              + "</tr>"
-            + "</thead> <tbody >";
+            + "</thead> <tbody > ";
      String grilla_html2 ="";  
-        rs2 = fuente.obtenerDato("  SELECT cod,clasificadora_ACTUAL,convert(varchar,FECHA_PUESTA,103)AS FECHA_PUESTA,  stuff(( select   ','+  [tipo_huevo] + ':'+convert(varchar,[cantidad])   from [v_mae_stock_linea_mixtos] with (nolock) "
+        rs2 = fuente.obtenerDato("  SELECT cod,clasificadora_ACTUAL,convert(varchar,FECHA_PUESTA,103)AS FECHA_PUESTA,  stuff(( select   ','+  [tipo_huevo] + ':'+convert(varchar,[cantidad])   "
+                + "from [v_mae_stock_linea_mixtos] with (nolock) "
                 + "                 where cod_carrito =  cod for XML path('') ),1,1,'')as fecha_involucrada "
-                + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA FROM v_mae_stock_linea_cajones12 WHERE cod_carrito not in (select cod_carrito from  mae_log_ptc_det_pedidos where estado=1 and u_medida='MIXTO') ) T ORDER BY 2,3");
+                + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA FROM v_mae_stock_linea_cajones12 with(nolock) "
+                + "WHERE cod_carrito not in (select cod_carrito from  mae_log_ptc_det_pedidos with(nolock) where estado=1 and u_medida='MIXTO') ) T ORDER BY 2,3");
        while(rs2.next())
         {
-            grilla_html2=grilla_html2+ "<tr>" + "<td  >"+rs2.getString(1 )+"</td>"+  "<td   >"+rs2.getString(2)+"</td>"+   "<td   >"+rs2.getString(3)+"</td>"+ 
+            grilla_html2=grilla_html2+ 
+                    "<tr>" + 
+                    "<td  >"+rs2.getString(1 )+"</td>"+  
+                    "<td   >"+rs2.getString(2)+"</td>"+   "<td   >"+rs2.getString(3)+"</td>"+ 
                     "<td class='something' >"+rs2.getString(4)+"</td>"+ " <td><div class='btn btn-dark btn-sm' id='"+rs2.getString(1 )+"' onclick='seleccionar_mixtos( "+rs2.getString(1 )+" )'>SELECCIONE</div>   </td> </tr>";
         }
        
         clases.controles.DesconnectarBD();
         JSONObject ob = new JSONObject();
         ob=new JSONObject();
-        JSONArray array_general = new JSONArray();         
-
-        ob.put("grilla",cabecera+grilla_html+"</tbody></table>");
-        ob.put("grilla_mixto",cabecera_mixto+grilla_html2+"</tbody></table>");
+ 
+        ob.put("grilla",cabecera+grilla_html+"</tbody></table></div>");
+        ob.put("grilla_mixto",cabecera_mixto+grilla_html2+"</tbody></table></div></div></div></div>");
         out.print(ob);  %>
         
          

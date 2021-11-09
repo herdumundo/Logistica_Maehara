@@ -18,11 +18,9 @@
     JSONObject ob = new JSONObject();
     ob=new JSONObject();
     String id_usuario       = (String) sesionOk.getAttribute("id_usuario");
-    String id_camion        = request.getParameter("id_camion");
-    String cantidad_total   = request.getParameter("cantidad_total");
     String array_pedido     = request.getParameter("contenido");
-    String id_chofer     = request.getParameter("id_chofer");
     String id_pedido     = request.getParameter("id_pedido");
+    String area     = request.getParameter("area");
     
     String mensaje="";
     int tipo_respuesta=0;    
@@ -30,13 +28,11 @@
     {
         clases.controles.connect.setAutoCommit(false);
         CallableStatement  callableStatement=null;   
-        callableStatement = clases.controles.connect.prepareCall("{call [mae_log_ptc_pedidos_editar](?,?,?,?,?,?,?,?)}");
-        callableStatement .setInt(      1,      Integer.parseInt(cantidad_total) );
-        callableStatement .setString(   2,      id_camion  );
-        callableStatement .setInt(      3,      Integer.parseInt(id_usuario) );
-        callableStatement .setString(   4,      array_pedido );
-        callableStatement .setString(   5,      id_pedido );
-        callableStatement .setString(   6,      id_chofer );
+        callableStatement = clases.controles.connect.prepareCall("{call [mae_log_ptc_pedidos_editar_cyo](?,?,?,?,?,?)}");
+        callableStatement .setInt(      1,      Integer.parseInt(id_usuario) );
+        callableStatement .setString(   2,      array_pedido );
+        callableStatement .setString(   3,      id_pedido );
+        callableStatement .setString(   4,      area );
  
         callableStatement.registerOutParameter("estado_registro", java.sql.Types.INTEGER);
         callableStatement.registerOutParameter("mensaje", java.sql.Types.VARCHAR);

@@ -99,6 +99,9 @@
                     
                     </div>
                     
+                    
+
+
                     <div id="contenido_modulos" > 
                     
                     </div>
@@ -144,9 +147,9 @@
     <script src="js/dataTables.rowGroup.js" type="text/javascript"></script>
     <script src="js/jquery.loadingModal.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    <script src="js/controladores.js" type="text/javascript"></script>
-    <script src="js/controladores_viajes.js" type="text/javascript"></script>
-
+    <script src="js/controladores.js?v=1.0" type="text/javascript"></script>
+    <script src="js/controladores_viajes.js?v=1.0" type="text/javascript"></script>
+    <script src="js/funciones.js" type="text/javascript"></script>
 </body>
 
 </html>

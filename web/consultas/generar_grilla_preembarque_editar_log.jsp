@@ -21,7 +21,18 @@
     fuente.setConexion(clases.controles.connect);
     String id            = request.getParameter("id");
     String grilla_html="";
-    String cabecera=" <table id='tb_preembarque' class='table table-bordered table-hover' style='width:100%'>"
+    String cabecera=" <table><thead><tr><th>TIPO</th><th>PEDIDO</th><th>CARGADOS</th><tbody >"
+            + "<tr><td>A</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_a'   ></td><td><input type='text' style='font-weight: bold; color: black;' value='0' readonly  id='txt_tipo_ac'   ></td></tr>"
+            + "<tr><td>B</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_b'    ></td><td><input type='text'     style='font-weight: bold; color: black;'  value='0' readonly  id='txt_tipo_bc'  ></td></tr>"
+            + "<tr><td>C</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_c'    ></td><td><input type='text'  style='font-weight: bold; color: black;'  value='0'  readonly  id='txt_tipo_cc'  ></td></tr>"
+            + "<tr><td>D</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_d'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0'  readonly  id='txt_tipo_dc'  ></td></tr>"
+            + "<tr><td>S</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_s'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0' readonly   id='txt_tipo_sc'  ></td></tr>"
+            + "<tr><td>J</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_j'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_jc'  ></td></tr>"
+            + "<tr><td>MIXTO</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_mixto'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_mixtoc'  ></td></tr>"
+            + "</tbody > </tr></thead> </table> <div id='div_grilla'  class='table_wrapper' >   "
+            + "<div id='container' style='width: 2000px; margin: auto;'>"
+            + "<div id='first' style=' width: 1800px; float: left; height: 700px;'> "
+            + "<table id='tb_preembarque' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
               + " <tr>"
             + "<th rowspan='2'  style='color: #fff; background: gray;'><b>Fecha puesta</b></th>  "
@@ -144,7 +155,7 @@
           cont_fila++; 
         }
        
-              String cabecera_mixto=" <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
+              String cabecera_mixto=" <div id='second' style=' width: 200px;  float: right;  height: 700px;'>  <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
                + " <tr>"
             + "<th colspan='6'  style='color: #fff; background: gray;'  class='text-center'  ><b>CARROS MIXTOS</b></th>  </tr>"
@@ -157,9 +168,13 @@
              + "</tr>"
             + "</thead> <tbody >";
      String grilla_html2 ="";  
-        rs2 = fuente.obtenerDato("  SELECT cod,clasificadora_ACTUAL,convert(varchar,FECHA_PUESTA,103)AS FECHA_PUESTA,  stuff(( select   ','+  [tipo_huevo] + ':'+convert(varchar,[cantidad])   from [v_mae_stock_linea_mixtos] with (nolock) "
+        rs2 = fuente.obtenerDato("  SELECT "
+                + " cod,clasificadora_ACTUAL,convert(varchar,FECHA_PUESTA,103)AS FECHA_PUESTA,  stuff(( select   ','+  [tipo_huevo] + ':'+convert(varchar,[cantidad])   "
+                + " from [v_mae_stock_linea_mixtos] with (nolock) "
                 + "                 where cod_carrito =  cod for XML path('') ),1,1,'')as fecha_involucrada "
-                + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA FROM v_mae_stock_linea_cajones12 WHERE cod_carrito not in (select cod_carrito from  mae_log_ptc_det_pedidos where estado=1 and u_medida='MIXTO' and id_cab not in("+id+")) ) T ORDER BY 2,3");
+                + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA "
+                + "     FROM v_mae_stock_linea_cajones12 with (nolock) WHERE cod_carrito not in ("
+                + " select cod_carrito from  mae_log_ptc_det_pedidos with (nolock) where estado=1 and u_medida='MIXTO' and id_cab not in("+id+")) ) T ORDER BY 2,3");
        while(rs2.next())
         {
             grilla_html2=grilla_html2+ "<tr>" + "<td  >"+rs2.getString(1 )+"</td>"+  "<td   >"+rs2.getString(2)+"</td>"+   "<td   >"+rs2.getString(3)+"</td>"+ 
@@ -167,15 +182,17 @@
         }
        
        String cod_camion="";
-           rs3 = fuente.obtenerDato(" select * from mae_log_pct_cab_pedidos WHERE ID="+id);
+       String cod_chofer="";
+           rs3 = fuente.obtenerDato(" select * from mae_log_pct_cab_pedidos with (nolock) WHERE ID="+id);
        while(rs3.next())
         {
             cod_camion=rs3.getString("cantidad")+"_"+rs3.getString("id_camion");
+            cod_chofer=rs3.getString("id_chofer");
         }
            
        String carros_mixtos="";
        int i=0;
-       rs4 = fuente.obtenerDato(" select cod_carrito from  mae_log_ptc_det_pedidos where estado=1 and u_medida='MIXTO' and id_cab   in("+id+" )");
+       rs4 = fuente.obtenerDato(" select cod_carrito from  mae_log_ptc_det_pedidos with (nolock) where estado=1 and u_medida='MIXTO' and id_cab   in("+id+" )");
        while(rs4.next())
         {
             if(i==0){
@@ -191,13 +208,11 @@
         JSONObject ob = new JSONObject();
         ob=new JSONObject();
  
-        ob.put("grilla",cabecera+grilla_html+"</tbody></table>");
-        ob.put("grilla_mixto",cabecera_mixto+grilla_html2+"</tbody></table>");
+        ob.put("grilla",cabecera+grilla_html+"</tbody></table></div>");
+        ob.put("grilla_mixto",cabecera_mixto+grilla_html2+"</tbody></table></div></div></div></div>");
         ob.put("cod_camion",cod_camion);
+        ob.put("cod_chofer",cod_chofer);
         ob.put("carros_mixtos",carros_mixtos);
         ob.put("id_pedido",id);
         
-        
-        out.print(ob);  %>
-        
-         
+        out.print(ob);  %>         

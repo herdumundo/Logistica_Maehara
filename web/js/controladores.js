@@ -26,85 +26,135 @@
     function generar_grilla_pedido(tipo,codigo)
     {
         var pagina="";
-        if(tipo==1){
+        var area="";//este sirve solo para enviar para que clasificadora es
+        if(tipo==1)
+        {
             pagina="generar_grilla_preembarque.jsp";
         }
-        else {
+        else if(tipo==2) 
+        {
             pagina="generar_grilla_preembarque_editar_log.jsp?id="+codigo;
+        }
+        else if(tipo==3) 
+        {
+            pagina="generar_grilla_preembarque_cyo.jsp?id="+codigo;
         }
         $.ajax({
                 type: "POST",
                 url: ruta_consultas+pagina,
             beforeSend: function() 
             {
-               $('body').loadingModal("show");
+                $('body').loadingModal("show");
             },           
             success: function (res) 
             {
-                $("#first").html(res.grilla  );
-                $("#second").html(res.grilla_mixto);
-                
-                if(tipo==2)
-                { //SI EL TIPO ES IGUAL A 2 ENTONCES YA ES UN PEDIDO GENERADO.
-                    var arr=res.cod_camion.split("_");
-                    var codigo_camion=arr[1];
-                    var capacidad=arr[0];
-                    $('#txt_disponibilidad').val(capacidad);
-                    $("#"+res.cod_camion).attr({"selected": true});//SELECCIONA PARA PRIMERA OPCION
-
-                    if(res.carros_mixtos.length>0)
-                    {
-                        var mySplitResult = res.carros_mixtos.split(",");
-                        for(i = 0; i < mySplitResult.length; i++)
-                        {
-                            $("#"+mySplitResult[i]).removeClass('btn-dark ').addClass(' btn-primary  bg1 ')
-                            $("#"+mySplitResult[i]).html("SELECCIONADO");
-                        }
-                        contar_mixtos_seleccionados();
-                    }
-                    $('#id_pedido').val(res.id_pedido);
-                }
+                //TIPO 1 ES IGUAL A GENERACION DE PEDIDO
+                //TIPO 2 ES IGUAL A FACTURACION
+                //TIPO 3 ES IGUAL A CYO
+                //FIRT ES EL DIV EN DONDE SE ALMACENA LA GRILLA DE CARROS ENTERO, EL SECOND ALMACENA LOS CARROS MIXTOS.
+                 $("#contenido_grillas").html(res.grilla +" "+ res.grilla_mixto  );
+                  seleccionar_todo_input();
                
-                $("td").focus(function(){
-                    var range = document.createRange();
-                    range.selectNodeContents(this);  
-                    var sel = window.getSelection(); 
-                    sel.removeAllRanges(); 
-                    sel.addRange(range);
-                    grilla_preembarque('1');
-                });
-                
-                $(".single_line").keydown(function (e) 
-                {
-                    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||  ((e.keyCode == 65 || e.keyCode == 86 || e.keyCode == 67) && (e.ctrlKey === true || e.metaKey === true)) || (e.keyCode >= 35 && e.keyCode <= 40)) 
-                    {
-                        return;
-                    }
-                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) 
-                    {
-                        e.preventDefault();
-                    }
-                });
                 
                 $('body').loadingModal('hide');
                 $("#btn_atras").show();
+                solo_numeros_td();//LAS CELDAS SOLO PERMITIRAN NUMEROS. 
                 
-                $("#ok").click(function() 
+                if(tipo==2||tipo==3)//CASO DE PEDIDOS QUE SE EDITARAN, YA SEA EN FACTURACION O EN CYO
+                {  
+                    var arr=res.cod_camion.split("_");
+                    var codigo_camion=arr[1];
+                    var capacidad=arr[0];
+                    $("#"+res.cod_camion).attr({"selected": true});//SELECCIONA PARA PRIMERA OPCION
+                    $("#"+res.cod_chofer).attr({"selected": true});//SELECCIONA PARA PRIMERA OPCION
+                    
+                    
+                    
+                    if(tipo==2)// 
+                    {
+                        $('#txt_disponibilidad').val(capacidad); 
+                    }
+                    else if (tipo==3) 
+                    {
+                        $('#txt_disponibilidad').val(res.cantidad_area);  //AQUI SE OBTIENE SOLO LA CANTIDAD DE DICHA AREA, NO EL TOTAL DE TODAS LAS AREAS.
+                        $('#validacion_cantidades').val(res.validacion_cantidades); //AQUI TRAE LOS TIPOS DE HUEVOS CON SUS CANTIDADES
+                        $('#validacion_tipos').val(res.validacion_tipos); //AQUI TRAE SOLO LOS TIPOS DE HUEVOS.
+                        
+                        
+                        document.getElementById('cbox_camion').disabled = true;// SE DENIEGA LA SELECCION DEL CAMION.
+                        document.getElementById('cbox_chofer').disabled = true;// SE DENIEGA LA SELECCION DEL CHOFER.
+                        area=res.area;// SE RECUPERA EL AREA
+                    }
+                    if(res.carros_mixtos.length>0)//ESTE PROCESO, NO DEBE ENTRAR AL GENERAR EL PEDIDO, YA QUE EL JSON NO CONTIENE ESTE VALOR.
+                    {
+                        var array_carros = res.carros_mixtos.split(",");
+                        for(i = 0; i < array_carros.length; i++)
+                        {
+                            $("#"+array_carros[i]).removeClass('btn-dark ').addClass(' btn-primary  bg1 ');
+                            $("#"+array_carros[i]).html("SELECCIONADO");
+                        }
+                        contar_mixtos_seleccionados();
+                    }
+                    $('#id_pedido').val(res.id_pedido);// SE RECIBE EL ID DEL PEDIDO PARA USARLO.
+                    
+                }
+                   
+                
+                if(tipo==2||tipo==1)
                 {
-                    grilla_preembarque('2');
-                });
-                    grilla_preembarque('1');
+                    $("td").focus(function()
+                    {
+                        var range = document.createRange();
+                        range.selectNodeContents(this);  
+                        var sel = window.getSelection(); 
+                        sel.removeAllRanges(); 
+                        sel.addRange(range);
+                        obtener_valores_celda('1');
+                    });
+                    
+                    
+                       if(tipo==2){ //SI ES PEDIDO GENERADO, ENTONCES EL CLIC DE GENERAR PEDIDO, HARA OTRA COSA.
+                        $('#btn_generar').click(function(){
+                            obtener_valores_celda('2','EDITAR');
+                        });
+                        }
+                        else if(tipo==1) {
+                            $('#btn_generar').click(function(){
+                            obtener_valores_celda('2','REGISTRO');
+                        });                }
+                        obtener_valores_celda('1');//EN ESTA CASO, REALIZARA VERIFICACIONES CUANDO ES 1, Y NO EJECUTARA EL REGISTRO.
+                }
+                else if(tipo==3)
+                {
+                     $("td").focus(function()
+                    {
+                        var range = document.createRange();
+                        range.selectNodeContents(this);  
+                        var sel = window.getSelection(); 
+                        sel.removeAllRanges(); 
+                        sel.addRange(range);
+                        calculo_cantidades_grilla_cyo(1,"CHEQUEO",area);
+                    });
+                     
+                        calculo_cantidades_grilla_cyo(1,"CHEQUEO",area);// CUANDO ES 1 CASO OMISO AL REGISTRO
+                        
+                        $('#btn_generar').click(function(){
+                        calculo_cantidades_grilla_cyo(2,"EDITARCYO",area);// CUANDO EL TIPO ES DOS, SIGNIFICA QUE SE EJECUTARA EL REGISTRO
+                        });
+                }
+                
+                cargar_cantidades_ingresadas_editar(tipo);
+             
             },
             error: function (error) 
             {
-                //$.get(ruta_consultas+'generar_grilla_preembarque.jsp', function(res){$("#contenido").html(res.grilla); });
-                ir_pedido_generar();
+                 //ir_pedido_generar();
             }
             
                 });  
     }
     
-    function grilla_preembarque(tipo,generacion_pedido)
+    function obtener_valores_celda(tipo,generacion_pedido)
     {
         var filas = document.querySelectorAll("#tb_preembarque tbody tr");
         var verificar_excedido_td=1;
@@ -147,7 +197,13 @@
         cantidad_total_ovo=0;
         var c = 0;
         var valores = '';
-        var cantidad_excedida=0;       
+        var cantidad_excedida=0;   
+        var tipoA=0;
+        var tipoB=0;
+        var tipoC=0;
+        var tipoD=0;
+        var tipoS=0;
+        var tipoJ=0;
          cantidad_total=0;
         filas.forEach(function (e) 
         {
@@ -190,7 +246,76 @@
             ovo_invo       = parseInt(columnas[30].textContent);
             ovo_cant_invo  = parseInt(columnas[31].textContent);    
 
-
+                 switch (tipo_huevo.trim()) {
+                    case "A":
+                            tipoA=parseInt(tipoA)+
+                              parseInt(ccha_cant_lib)+parseInt(ccha_cant_acep)+
+                              parseInt(ccha_cant_invo)+parseInt(ccha_cant_ldo)+
+                              parseInt(cchb_cant_lib)+parseInt(cchb_cant_acep)+
+                              parseInt(cchb_cant_invo)+parseInt(cchb_cant_ldo)+ 
+                              parseInt(cchh_cant_lib)+parseInt(cchh_cant_acep)+
+                              parseInt(cchh_cant_invo)+parseInt(cchh_cant_ldo)+ 
+                              parseInt(ovo_cant_lib)+parseInt(ovo_cant_acep)+
+                              parseInt(ovo_cant_invo);
+                      break;
+                    case "B":
+                      tipoB=parseInt(tipoB)+
+                              parseInt(ccha_cant_lib)+parseInt(ccha_cant_acep)+
+                              parseInt(ccha_cant_invo)+parseInt(ccha_cant_ldo)+
+                              parseInt(cchb_cant_lib)+parseInt(cchb_cant_acep)+
+                              parseInt(cchb_cant_invo)+parseInt(cchb_cant_ldo)+ 
+                              parseInt(cchh_cant_lib)+parseInt(cchh_cant_acep)+
+                              parseInt(cchh_cant_invo)+parseInt(cchh_cant_ldo)+ 
+                              parseInt(ovo_cant_lib)+parseInt(ovo_cant_acep)+
+                              parseInt(ovo_cant_invo);
+                      break;
+                     case "C":
+                      tipoC=parseInt(tipoC)+
+                              parseInt(ccha_cant_lib)+parseInt(ccha_cant_acep)+
+                              parseInt(ccha_cant_invo)+parseInt(ccha_cant_ldo)+
+                              parseInt(cchb_cant_lib)+parseInt(cchb_cant_acep)+
+                              parseInt(cchb_cant_invo)+parseInt(cchb_cant_ldo)+ 
+                              parseInt(cchh_cant_lib)+parseInt(cchh_cant_acep)+
+                              parseInt(cchh_cant_invo)+parseInt(cchh_cant_ldo)+ 
+                              parseInt(ovo_cant_lib)+parseInt(ovo_cant_acep)+
+                              parseInt(ovo_cant_invo);
+                      break;
+                        case "D":
+                     tipoD=parseInt(tipoD)+
+                              parseInt(ccha_cant_lib)+parseInt(ccha_cant_acep)+
+                              parseInt(ccha_cant_invo)+parseInt(ccha_cant_ldo)+
+                              parseInt(cchb_cant_lib)+parseInt(cchb_cant_acep)+
+                              parseInt(cchb_cant_invo)+parseInt(cchb_cant_ldo)+ 
+                              parseInt(cchh_cant_lib)+parseInt(cchh_cant_acep)+
+                              parseInt(cchh_cant_invo)+parseInt(cchh_cant_ldo)+ 
+                              parseInt(ovo_cant_lib)+parseInt(ovo_cant_acep)+
+                              parseInt(ovo_cant_invo);
+                      break;
+                    case "S":
+                      tipoS=parseInt(tipoS)+
+                              parseInt(ccha_cant_lib)+parseInt(ccha_cant_acep)+
+                              parseInt(ccha_cant_invo)+parseInt(ccha_cant_ldo)+
+                              parseInt(cchb_cant_lib)+parseInt(cchb_cant_acep)+
+                              parseInt(cchb_cant_invo)+parseInt(cchb_cant_ldo)+ 
+                              parseInt(cchh_cant_lib)+parseInt(cchh_cant_acep)+
+                              parseInt(cchh_cant_invo)+parseInt(cchh_cant_ldo)+ 
+                              parseInt(ovo_cant_lib)+parseInt(ovo_cant_acep)+
+                              parseInt(ovo_cant_invo);
+                      break;
+                     case "J":
+                      tipoJ=parseInt(tipoJ)+
+                              parseInt(ccha_cant_lib)+parseInt(ccha_cant_acep)+
+                              parseInt(ccha_cant_invo)+parseInt(ccha_cant_ldo)+
+                              parseInt(cchb_cant_lib)+parseInt(cchb_cant_acep)+
+                              parseInt(cchb_cant_invo)+parseInt(cchb_cant_ldo)+ 
+                              parseInt(cchh_cant_lib)+parseInt(cchh_cant_acep)+
+                              parseInt(cchh_cant_invo)+parseInt(cchh_cant_ldo)+ 
+                              parseInt(ovo_cant_lib)+parseInt(ovo_cant_acep)+
+                              parseInt(ovo_cant_invo);
+                      break;
+                   
+                  }
+             
             if(ccha_cant_lib>0&&ccha_cant_lib<=ccha_lib){
                 columnas[3].style.backgroundColor = 'blue';
              }
@@ -670,34 +795,53 @@
                         valores = valores + ',' + arr;
                     }
                         c++;
+                        
+                    
                 }
         });
 
         $('#txt_cargados').val(parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado));
         calculo_mixto_enteros_pedidos();//AQUI SE REALIZA LA SUMA DE TODOS LOS SELECCIONADOS
+        sumar_tipos_huevos(tipoA,tipoB,tipoC,tipoD,tipoS,tipoJ);
+         
+        
         
         if(tipo=='2') //TIPO 2 ES PARA REALIZAR EL REGISTRO.
         {
             if(verificar_excedido_td==0){
-                alert("cantidad no puede se mayor a la disponible")
+                aviso_generico(2,"cantidad no puede se mayor a la disponible")
             }
             else
             {
                 if(parseInt($('#txt_disponibilidad').val())<cantidad_total)
                 {
-                    alert("CANTIDAD SUPERADA");
+                    aviso_generico(2,"CANTIDAD SUPERADA");
                 }
                 else if( cantidad_total==0)
                 {
-                    alert("DEBE INGRESAR CARROS");
+                     aviso_generico(2,"DEBE INGRESAR CARROS")
                 } 
+                
+                else if(    parseInt($('#txt_tipo_a').val())!=parseInt($('#txt_tipo_ac').val())||parseInt($('#txt_tipo_b').val())!=parseInt($('#txt_tipo_bc').val())
+                        ||  parseInt($('#txt_tipo_c').val())!=parseInt($('#txt_tipo_cc').val())||parseInt($('#txt_tipo_d').val())!=parseInt($('#txt_tipo_dc').val())
+                        ||  parseInt($('#txt_tipo_s').val())!=parseInt($('#txt_tipo_sc').val())||parseInt($('#txt_tipo_j').val())!=parseInt($('#txt_tipo_jc').val())
+                        ||parseInt($('#txt_tipo_mixto').val())!=parseInt($('#txt_tipo_mixtoc').val()))
+                {
+                     aviso_generico(2,"CANTIDADES DE TIPOS DE HUEVOS NO COINCIDEN CON LO SOLICITADO");
+                }
+                
                 else if(parseInt($('#txt_disponibilidad').val())==0  )
                 {
-                    alert("DEBE SELECCIONAR EL CAMION");
+                     aviso_generico(2,"DEBE SELECCIONAR EL CAMION")
+                   
+                }  
+                else if($('#cbox_chofer').val()=="-"  )
+                {
+                     aviso_generico(2,"DEBE SELECCIONAR EL CHOFER")
                 }  
                 else if(parseInt($('#txt_disponibilidad').val())>parseInt($('#txt_cargados').val())) 
                 {
-                    alert("DEBE COMPLETAR LA CAPACIDAD DEL CAMION");
+                      aviso_generico(2,"DEBE COMPLETAR LA CAPACIDAD DEL CAMION")
                 } 
                 else 
                 {
@@ -714,10 +858,8 @@
                     }
                 } 
             }
-
         }
-
-      
+       
     }
     
     function separar_codigo_camion()
@@ -737,7 +879,7 @@
         sel.addRange(range);
     }
    
-    function aviso_generico(tipo,mensaje,formulario)
+    function aviso_generico(tipo,mensaje,formulario,celdas)
     {
        if(tipo=="1"){
         swal.fire({
@@ -747,7 +889,7 @@
                 });
                 
                 if(formulario=='PEDIDOS'){
-                    ir_pedido(1);
+                    ir_menu_principal();
                 }
                 else if (formulario=='ANULAR')
                 {
@@ -764,6 +906,11 @@
                 html:mensaje,
                 confirmButtonText: "CERRAR"
                 });  
+               
+            if(formulario=='PEDIDOS'){
+                actualizar_celdas(celdas);
+            }
+          
        }
        
        
@@ -784,6 +931,20 @@
         }
         
         contar_mixtos_seleccionados();
+        
+        var mixto_cargado=$('#txt_tipo_mixtoc').val();
+        var mixto_ingresado=$('#txt_tipo_mixto').val();
+        if(parseInt(mixto_cargado)>parseInt(mixto_ingresado))
+        {
+            document.getElementById('txt_tipo_mixtoc').style.backgroundColor = 'red';        
+        }
+        else if(parseInt(mixto_cargado)==parseInt(mixto_ingresado)){
+            document.getElementById('txt_tipo_mixtoc').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_mixtoc').style.backgroundColor = 'green';        
+        }
     }
    
     function contar_mixtos_seleccionados()
@@ -809,9 +970,7 @@
            carro   =  columnas_pre[0].textContent;
            area   =  columnas_pre[1].textContent;
            puesta   =  columnas_pre[2].textContent;
-        
            boton   =  columnas_pre[4].textContent;
-           // cantidad++;
           
            if(boton.length==15)//ES SELECCIONADO
             {
@@ -844,6 +1003,8 @@
                
             }  
          });
+         
+        
         calculo_mixto_enteros_pedidos();
         
     }
@@ -857,6 +1018,8 @@
         $('#txt_cargados').val(parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado));
         
         var total_mixto_entero=parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado);
+       
+         $('#txt_tipo_mixtoc').val(parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado));//TEXTO DEL INGRESADOR DE CANTIDADES TOTALES
         if(parseInt($('#txt_disponibilidad').val())<total_mixto_entero)
         {
             $('#txt_cargados').css('background-color', 'red');
@@ -870,6 +1033,29 @@
             $('#txt_cargados').css('background-color', 'green');
         } 
    }
+   
+    function calculo_mixto_enteros_pedidos_cyo(area)
+    {
+        $('#td_ccha').html(area+' TOTAL CARGADOS:'+(parseInt(contador_mixto_pedido_log_ccha)+ parseInt(cantidad_total_ccha)));
+       
+        $('#txt_cargados').val(parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha));
+        
+        var total_mixto_entero=parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado);
+       
+        if(parseInt($('#txt_disponibilidad').val())<total_mixto_entero)
+        {
+            $('#txt_cargados').css('background-color', 'red');
+        }
+        else if(parseInt($('#txt_disponibilidad').val())==total_mixto_entero)
+        {
+            $('#txt_cargados').css('background-color', 'yellow');
+        }
+        else 
+        {
+            $('#txt_cargados').css('background-color', 'green');
+        } 
+   }
+   
    
     function registrar_pedido(id_camion,cantidad_total,contenido,mensaje,pagina)
     {
@@ -895,7 +1081,57 @@
                 $.ajax({
                 type: "POST",
                 url: cruds+pagina,
-                data: ({id_camion:id_camion,cantidad_total:cantidad_total,contenido:contenido+contenido_mixto,id_pedido:$('#id_pedido').val()}),
+                data: ({id_camion:id_camion,cantidad_total:cantidad_total,contenido:contenido+contenido_mixto,id_pedido:$('#id_pedido').val(),id_chofer:$('#cbox_chofer').val()}),
+                beforeSend: function() 
+                {
+                    Swal.fire({
+                    title: 'PROCESANDO!',
+                    html: 'ESPERE<strong></strong>...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                    Swal.showLoading()
+                    timerInterval = setInterval(() => {
+                    Swal.getContent().querySelector('strong').textContent = Swal.getTimerLeft()
+                        }, 1000);
+                    } 
+                    });
+                },           
+                success: function (res) 
+                {
+                    aviso_generico(res.tipo_respuesta,res.mensaje,'PEDIDOS',res.carros_excedentes);
+                }
+                });
+               
+                
+            }
+        });  
+    }
+   
+    function registrar_pedido_cyo(contenido,area)
+    {
+        var contenido_mixto="";
+        if(array_mixto_pedidos.length>0)
+        {
+            contenido_mixto=","+array_mixto_pedidos;
+        }
+        
+        Swal.fire({
+    
+        title: 'CONFIRMACION',
+        text: 'DESEA MODIFICAR EL PEDIDO?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'SI!',
+        cancelButtonText: 'NO!' }).then((result) => 
+        {
+            if (result.value) 
+            {
+                $.ajax({
+                type: "POST",
+                url: cruds+"control_editar_pedido_cyo.jsp",
+                data: ({contenido:contenido,id_pedido:$('#id_pedido').val(),area:area}),
                 beforeSend: function() 
                 {
                     Swal.fire({
@@ -920,7 +1156,6 @@
             }
         });  
     }
-    
     function anular_pedido(id)
     {
         Swal.fire({
@@ -1032,4 +1267,238 @@
                 e.stopPropagation();
             }); 
         });   
+    }
+    
+    function actualizar_celdas(celdas){
+    var split_celdas=celdas.split("&");
+    var split_valores="";
+    for(i = 0; i < split_celdas.length; i++)
+        {
+            split_valores= split_celdas[i].split(",");
+            for(c = 0; c < split_valores.length; c++)
+            {
+                $('.'+split_valores[0].trim()).html(split_valores[1]);     
+            }
+        }
+        obtener_valores_celda('1');
+
+  }
+  
+  function cargar_cantidades(){
+      
+        $.ajax({
+                    type: "POST",
+                    url: ruta_consultas+'test_carga.jsp',
+                    data:({
+                        
+                        A:$('#txt_tipo_a').val(),B:$('#txt_tipo_b').val(),C:$('#txt_tipo_c').val(),D:$('#txt_tipo_d').val(),S:$('#txt_tipo_s').val(),J:$('#txt_tipo_j').val(),
+                        AC:$('#txt_tipo_ac').val(),BC:$('#txt_tipo_bc').val(),CC:$('#txt_tipo_cc').val(),DC:$('#txt_tipo_dc').val(),SC:$('#txt_tipo_sc').val(),JC:$('#txt_tipo_jc').val()
+                    
+          }),  
+                    beforeSend: function() 
+                    { 
+                    },           
+                    success: function (res) 
+                    {
+                       $('#txt_tipo_a').val(res.A);
+                       $('#txt_tipo_b').val(res.B);
+                       $('#txt_tipo_c').val(res.C);
+                       $('#txt_tipo_d').val(res.D);
+                       $('#txt_tipo_s').val(res.S);
+                       $('#txt_tipo_j').val(res.J);
+                       
+                        $('#txt_tipo_ac').val(res.AC);
+                       $('#txt_tipo_bc').val(res.BC);
+                       $('#txt_tipo_cc').val(res.CC);
+                       $('#txt_tipo_dc').val(res.DC);
+                       $('#txt_tipo_sc').val(res.SC);
+                       $('#txt_tipo_jc').val(res.JC);
+                       
+                    }
+                    });
+  }
+  
+  
+    function consultar_cantidades(){
+      
+        $.ajax({
+                    type: "POST",
+                    url: ruta_consultas+'test.jsp',
+                 //  data:({A:$('#txt_tipo_a').val(),B:$('#txt_tipo_b').val(),C:$('#txt_tipo_c').val(),D:$('#txt_tipo_d').val(),S:$('#txt_tipo_s').val(),J:$('#txt_tipo_j').val()}),  
+                    beforeSend: function() 
+                    { 
+                    },           
+                    success: function (res) 
+                    {
+                        $('#txt_tipo_a').val(res.A);
+                        $('#txt_tipo_b').val(res.B);
+                        $('#txt_tipo_c').val(res.C);
+                        $('#txt_tipo_d').val(res.D);
+                        $('#txt_tipo_s').val(res.S);
+                        $('#txt_tipo_j').val(res.J);
+                        
+                        $('#txt_tipo_ac').val(res.AC);
+                        $('#txt_tipo_bc').val(res.BC);
+                        $('#txt_tipo_cc').val(res.CC);
+                        $('#txt_tipo_dc').val(res.DC);
+                        $('#txt_tipo_sc').val(res.SC);
+                        $('#txt_tipo_jc').val(res.JC);
+                    $('#txt_tipo_ac').bind('DOMSubtreeModified', function(){
+  console.log('changed');
+});    
+                   
+                    }   
+                    });
+  }
+  
+  
+    function sumar_tipos_huevos(tipoA,tipoB,tipoC,tipoD,tipoS,tipoJ){
+         
+         $('#txt_tipo_ac').val(tipoA);
+         $('#txt_tipo_bc').val(tipoB);
+         $('#txt_tipo_cc').val(tipoC);
+         $('#txt_tipo_dc').val(tipoD);
+         $('#txt_tipo_sc').val(tipoS);
+         $('#txt_tipo_jc').val(tipoJ);
+         
+         
+        var A=  $('#txt_tipo_a').val();
+        var B=  $('#txt_tipo_b').val();
+        var C=  $('#txt_tipo_c').val();
+        var D=  $('#txt_tipo_d').val();
+        var S=  $('#txt_tipo_s').val();
+        var J=  $('#txt_tipo_j').val();
+        
+        var ac=tipoA;
+        var bc=tipoB;
+        var cc=tipoC;
+        var dc=tipoD;
+        var sc=tipoS;
+        var jc=tipoJ;
+        
+        if(parseInt(ac)> parseInt(A))
+        {
+            document.getElementById('txt_tipo_ac').style.backgroundColor = 'red';  
+        }
+        else if(parseInt(ac)==parseInt(A)){
+            document.getElementById('txt_tipo_ac').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_ac').style.backgroundColor = 'green';        
+        }
+        if(parseInt(bc)>parseInt(B))
+        {
+            document.getElementById('txt_tipo_bc').style.backgroundColor = 'red';        
+        }
+        else if(parseInt(bc)==parseInt(B)){
+            document.getElementById('txt_tipo_bc').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_bc').style.backgroundColor = 'green';        
+        }
+        if(parseInt(cc)>parseInt(C))
+        {
+            document.getElementById('txt_tipo_cc').style.backgroundColor = 'red';        
+        }
+        else if(parseInt(cc)==parseInt(C)){
+            document.getElementById('txt_tipo_cc').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_cc').style.backgroundColor = 'green';        
+        }
+        if(parseInt(dc)>parseInt(D))
+        {
+            document.getElementById('txt_tipo_dc').style.backgroundColor = 'red';        
+        }
+        else if(parseInt(dc)==parseInt(D)){
+            document.getElementById('txt_tipo_dc').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_dc').style.backgroundColor = 'green';        
+        }
+        if(parseInt(sc)>parseInt(S))
+        {
+            document.getElementById('txt_tipo_sc').style.backgroundColor = 'red';        
+        }
+         else if(parseInt(sc)==parseInt(S)){
+            document.getElementById('txt_tipo_sc').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_sc').style.backgroundColor = 'green';        
+        }
+        if(parseInt(jc)>parseInt(J))
+        {
+            document.getElementById('txt_tipo_jc').style.backgroundColor = 'red';        
+        }
+        else if(parseInt(jc)==parseInt(J)){
+            document.getElementById('txt_tipo_jc').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_jc').style.backgroundColor = 'green';        
+        }
+        
+        var mixto_cargado=$('#txt_tipo_mixtoc').val();
+        var mixto_ingresado=$('#txt_tipo_mixto').val();
+        if(parseInt(mixto_cargado)>parseInt(mixto_ingresado))
+        {
+            document.getElementById('txt_tipo_mixtoc').style.backgroundColor = 'red';        
+        }
+        else if(parseInt(mixto_cargado)==parseInt(mixto_ingresado)){
+            document.getElementById('txt_tipo_mixtoc').style.backgroundColor = 'yellow';        
+        }
+        else
+        {
+            document.getElementById('txt_tipo_mixtoc').style.backgroundColor = 'green';        
+        }
+        
+        
+    }
+    
+    
+    function seleccionar_todo_input()
+    {
+        $("input").blur(function() 
+        {
+            if ($(this).attr("data-selected-all")) 
+            {
+                $(this).removeAttr("data-selected-all");
+            }
+        });
+    
+        $("input").click(function() 
+        {
+            if (!$(this).attr("data-selected-all")) {
+            try {
+                    $(this).selectionStart = 0;
+                      $(this).selectionEnd = $(this).value.length + 1;
+                      //add atribute allowing normal selecting post focus
+                      $(this).attr("data-selected-all", true);
+                    } catch (err) {
+                      $(this).select();
+                      //add atribute allowing normal selecting post focus
+                      $(this).attr("data-selected-all", true);
+                    }
+                  }
+                });
+                }  
+                
+    function cargar_cantidades_ingresadas_editar(tipo)
+    {
+        if(tipo==2)
+        {
+            $('#txt_tipo_a').val($('#txt_tipo_ac').val());
+            $('#txt_tipo_b').val( $('#txt_tipo_bc').val());
+            $('#txt_tipo_c').val($('#txt_tipo_cc').val());
+            $('#txt_tipo_d').val($('#txt_tipo_dc').val());
+            $('#txt_tipo_s').val($('#txt_tipo_sc').val());
+            $('#txt_tipo_j').val($('#txt_tipo_jc').val());
+            $('#txt_tipo_mixto').val($('#txt_tipo_mixtoc').val());
+        }
+
     }

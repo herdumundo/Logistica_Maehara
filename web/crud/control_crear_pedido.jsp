@@ -21,25 +21,29 @@
     String id_camion        = request.getParameter("id_camion");
     String cantidad_total   = request.getParameter("cantidad_total");
     String array_pedido     = request.getParameter("contenido");
+    String id_chofer     = request.getParameter("id_chofer");
     String contenido_mixto_INSERT     = request.getParameter("contenido_mixto_INSERT");
-   
+    String carros_excedentes="";
     String mensaje="";
     int tipo_respuesta=0;    
     try 
     {
         clases.controles.connect.setAutoCommit(false);
         CallableStatement  callableStatement=null;   
-        callableStatement = clases.controles.connect.prepareCall("{call [mae_log_ptc_pedidos_insert](?,?,?,?,?,?)}");
+        callableStatement = clases.controles.connect.prepareCall("{call [mae_log_ptc_pedidos_insert](?,?,?,?,?,?,?,?)}");
         callableStatement .setInt(1,        Integer.parseInt(cantidad_total) );
         callableStatement .setString(2,        id_camion  );
         callableStatement .setInt(3,        Integer.parseInt(id_usuario) );
         callableStatement .setString(4,     array_pedido );
+        callableStatement .setString(5,     id_chofer );
  
         callableStatement.registerOutParameter("estado_registro", java.sql.Types.INTEGER);
         callableStatement.registerOutParameter("mensaje", java.sql.Types.VARCHAR);
+        callableStatement.registerOutParameter("carros_excedentes", java.sql.Types.VARCHAR);
         callableStatement.execute(); 
         tipo_respuesta = callableStatement.getInt("estado_registro");
         mensaje= callableStatement.getString("mensaje");
+        carros_excedentes= callableStatement.getString("carros_excedentes");
         if (tipo_respuesta==0)
         {
             clases.controles.connect.rollback(); 
@@ -51,10 +55,13 @@
             clases.controles.DesconnectarBD();
             ob.put("mensaje", mensaje);
             ob.put("tipo_respuesta", tipo_respuesta);
+            ob.put("carros_excedentes", carros_excedentes);
     } 
     catch (Exception e) 
     {           
         ob.put("mensaje", e.toString());
         ob.put("tipo_respuesta", "0");
+        ob.put("carros_excedentes",e.toString());
+
     }
     out.print(ob); %>
