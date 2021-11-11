@@ -11,7 +11,7 @@
     ResultSet rs,rs2;
      rs = fuente.obtenerDato(" select a.id,FORMAT (a.fecha_registro, 'dd/MM/yyyy hh:mm') as fecha_registro,concat(code,'-',name) as camion "
              + "                from mae_log_pct_cab_pedidos a "
-             + "                inner join maehara.dbo.[@CAMIONES] b    on a.id_camion=b.Code collate database_default and estado   in (1)"); %>
+             + "                inner join maehara.dbo.[@CAMIONES] b    on a.id_camion=b.Code collate database_default and estado   in (1,2)"); %>
     
        
        

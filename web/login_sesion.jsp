@@ -16,7 +16,7 @@
 
     <!-- Login Form -->
     <form action="crud/control_login.jsp">
-        <input type="text" id="usuario" class="fadeIn second" name="usuario" placeholder="Ingrese su usuario" required="required">
+         <input type="text" id="usuario" class="fadeIn second" name="usuario" placeholder="Ingrese su usuario" required="required">
       <input type="password" id="pass" class="fadeIn third" name="pass" placeholder="Ingrese su contrase&ntilde;a" required="required">
       <input type="submit" class="fadeIn fourth" value="INGRESAR">
     </form>

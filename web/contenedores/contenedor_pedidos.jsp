@@ -42,16 +42,16 @@
     <input type="hidden" id="validacion_tipos"> 
     
     <br> <br>
-       <input type="button" value="GENERAR PEDIDO" class="form-control bg-warning" id="btn_generar"style="font-weight: bold;color:white;"   >
-         <div id="contenido_grillas">
-           <!--  <div id="div_grilla"  class="table_wrapper" >
-        <div id="container" style="width: 2000px; margin: auto;">
-            <div id="first" style=" width: 1800px; float: left; height: 700px;"></div>
-            <div id="second" style=" width: 200px;  float: right;  height: 700px;"></div>
-         </div>
-    </div>
-</div>-->
+   
+    
+        <form  class="row align-items-end"  action="crud/control_reporte_log_stock_ptc.jsp" target="_blank">
+            <input type="button" value="GENERAR PEDIDO" class="form-control col bg-success inline" id="btn_generar"style="font-weight: bold;color:white;"   >
+            <input type="submit" value="GENERAR REPORTE" class="form-control col bg-dark "  style="font-weight: bold;color:white;"   >
 
+       </form> <br>
+     
+          <div id="contenido_grillas">
+    
 
 </div>
     
@@ -62,5 +62,17 @@
 }
        .bg1 {
   	background-color: blue;
-  }   
+  }
+  
+  .row {
+      background: #3333ff;
+  margin-top:  10px;
+}
+
+.col {
+    border: solid 1px #ffff66;
+  padding: 7px;
+}
     </style>
+    
+ 

@@ -17,21 +17,65 @@
 
 
 <%     
+    
     clases.controles.connectarBD();
     fuente.setConexion(clases.controles.connect);
  
+    ResultSet rs,rs2,rs3;
     String grilla_html="";
-    String cabecera="<table><thead><tr><th>TIPO</th><th>PEDIDO</th><th>CARGADOS</th><tbody >"
-            + "<tr><td>A</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_a'   ></td><td><input type='text' style='font-weight: bold; color: black;' value='0' readonly  id='txt_tipo_ac'   ></td></tr>"
-            + "<tr><td>B</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_b'    ></td><td><input type='text'     style='font-weight: bold; color: black;'  value='0' readonly  id='txt_tipo_bc'  ></td></tr>"
-            + "<tr><td>C</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_c'    ></td><td><input type='text'  style='font-weight: bold; color: black;'  value='0'  readonly  id='txt_tipo_cc'  ></td></tr>"
-            + "<tr><td>D</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_d'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0'  readonly  id='txt_tipo_dc'  ></td></tr>"
-            + "<tr><td>S</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_s'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0' readonly   id='txt_tipo_sc'  ></td></tr>"
-            + "<tr><td>J</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_j'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_jc'  ></td></tr>"
-            + "<tr><td>MIXTO</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_mixto'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_mixtoc'  ></td></tr>"
-            + "</tbody > </tr></thead> </table> <div id='div_grilla'  class='table_wrapper' >"
+    String fp_a="N/A";
+    String fp_b="N/A";
+    String fp_c="N/A";
+    String fp_d="N/A";
+    String fp_s="N/A";
+    String fp_j="N/A";
+    String style_a="style='display:none'";
+    String style_b="style='display:none'";
+    String style_c="style='display:none'";
+    String style_d="style='display:none'";
+    String style_s="style='display:none'";
+    String style_j="style='display:none'";
+     rs3 = fuente.obtenerDato("  select min(convert(date,fecha_puesta)) as fecha_puesta ,tipo_huevo from  v_mae_preembarque  with(nolock)  group by tipo_huevo  ");
+       while(rs3.next())
+        {
+            if(rs3.getString("tipo_huevo").equals("A")){
+              fp_a=  rs3.getString("fecha_puesta");
+              style_a="";
+            }
+            else if(rs3.getString("tipo_huevo").equals("B")){
+              fp_b=  rs3.getString("fecha_puesta");
+              style_b="";
+            }
+             else if(rs3.getString("tipo_huevo").equals("C")){
+              fp_c=  rs3.getString("fecha_puesta");
+              style_c="";
+            }
+             else if(rs3.getString("tipo_huevo").equals("D")){
+              fp_d=  rs3.getString("fecha_puesta");
+              style_d="";
+            }
+             else if(rs3.getString("tipo_huevo").equals("S")){
+              fp_s=  rs3.getString("fecha_puesta");
+              style_s="";
+            }
+             else if(rs3.getString("tipo_huevo").equals("J")){
+              fp_j=  rs3.getString("fecha_puesta");
+              style_j="";
+            }
+        }
+    
+    String cabecera="<table><thead><tr><th>TIPO</th><th>PEDIDO</th><th>CARGADOS</th><th>FECHA PUESTA VIEJA</th><tbody >"
+            + "<tr  "+style_a+"><td>A</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_a'   ></td><td><input type='text' style='font-weight: bold; color: black;' value='0' readonly  id='txt_tipo_ac'   ></td>                       <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_a+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_b+"><td>B</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_b'    ></td><td><input type='text'     style='font-weight: bold; color: black;'  value='0' readonly  id='txt_tipo_bc'  ></td>                  <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_b+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_c+"><td>C</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_c'    ></td><td><input type='text'  style='font-weight: bold; color: black;'  value='0'  readonly  id='txt_tipo_cc'  ></td>                    <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_c+"' readonly   ></td>   </tr>"
+            + "<tr  "+style_d+"><td>D</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_d'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0'  readonly  id='txt_tipo_dc'  ></td>                   <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_d+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_s+"><td>S</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_s'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0' readonly   id='txt_tipo_sc'  ></td>                   <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_s+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_j+"><td>J</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_j'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_jc'  ></td>                   <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_j+"' readonly     ></td>   </tr>"
+            + "<tr><td>MIXTO</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_mixto'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_mixtoc'  ></td>   </tr>"
+            + "</tbody > </tr></thead> </table>"
+            + " <div id='div_grilla' style='  margin: left;'  class='table_wrapper' >"
             + "<div id='container' style='width: 2000px; margin: auto;'>"
-            + "<div id='first' style=' width: 1800px; float: left; height: 700px;'> "
+            + "<div id='first' style=' width: 1800px; float: left; height: 500px;'> "
             + "<table id='tb_preembarque' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
               + " <tr>"
@@ -61,8 +105,7 @@
             + "</thead> <tbody >";
     int cont_fila=0;
     int cont_id=0;
-    ResultSet rs,rs2;
-     rs = fuente.obtenerDato(" SELECT * FROM ( select *,convert(varchar,fecha_puesta,103)as fecha_format from  v_mae_preembarque  with(nolock) ) T WHERE tipo_huevo NOT IN ('-')   order by 1,2  ");
+      rs = fuente.obtenerDato(" SELECT * FROM ( select *,convert(varchar,fecha_puesta,103)as fecha_format from  v_mae_preembarque  with(nolock) ) T WHERE tipo_huevo NOT IN ('-')   order by 1,2  ");
        while(rs.next())
         {
             String edit1="";//contenteditable='true'
@@ -84,55 +127,55 @@
      
                 if(rs.getInt(3)>0){
                
-              edit1="contenteditable='true'  style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
+              edit1="contenteditable='true'  style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
             }
                 if(rs.getInt(4)>0){
-              edit2="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'";  
+              edit2="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'";  
             }
                 if(rs.getInt(5)>0){
-              edit3="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
+              edit3="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
 
             }
                 if(rs.getInt(6)>0){
-              edit4="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nLavados'";  
+              edit4="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nLavados'";  
             }
                 if(rs.getInt(7)>0){
-              edit5="contenteditable='true' style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
+              edit5="contenteditable='true' style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
             }
                 if(rs.getInt(8)>0){
-              edit6="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'";  
+              edit6="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'";  
             }
                 if(rs.getInt(9)>0){
-              edit7="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
+              edit7="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
             }
                 if(rs.getInt(10)>0){
-              edit8="contenteditable='true'style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nLavados'";  
+              edit8="contenteditable='true'style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nLavados'";  
             }
                 if(rs.getInt(11)>0){
-              edit9="contenteditable='true' style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
+              edit9="contenteditable='true' style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
             }
                 if(rs.getInt(12)>0){
-              edit10="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'";  
+              edit10="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'";  
             }
                 if(rs.getInt(13)>0){
-              edit11="contenteditable='true'style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
+              edit11="contenteditable='true'style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
             }
                 if(rs.getInt(14)>0){
-              edit12="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nLavados'";  
+              edit12="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nLavados'";  
             }
                 if(rs.getInt(15)>0){
-              edit13="contenteditable='true' style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
+              edit13="contenteditable='true' style='color: #fff; background: black;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nLiberados'";  
             }
                 if(rs.getInt(16)>0){
-              edit14="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'" ;  
+              edit14="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nAceptados tal cual'" ;  
             }
                 if(rs.getInt(17)>0){
-              edit15="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(19)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
+              edit15="contenteditable='true' style='color: #fff; background: green;' title='Fecha puesta: "+rs.getString(23)+"\nTipo de huevo: "+rs.getString(2)+"\nFechas involucradas'";  
             }
-              String fecha_form=rs.getString(19).replaceAll("/", "");
+              String fecha_form=rs.getString(23).replaceAll("/", "");
            grilla_html=grilla_html+
            "<tr class='item-model-number'  >"
-                   + "<td   >"+rs.getString(19 )+"</td>"
+                   + "<td   >"+rs.getString(23 )+"</td>"
                    + "<td width='35'  class='text-center '> "+rs.getString(2)+" </td>"          ;                                                                        
                     
                     cont_id++;
@@ -246,7 +289,7 @@
           cont_fila++; 
         }
        
-              String cabecera_mixto="<div id='second' style=' width: 200px;  float: right;  height: 700px;'> <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
+              String cabecera_mixto="<div id='second' style=' width: 200px;  float: right;  height: 5s00px;'> <table id='tb_preembarque_mixto' class='table table-bordered table-hover' style='width:100%'>"
             + "<thead>"
                + " <tr>"
             + "<th colspan='6'  style='color: #fff; background: gray;'  class='text-center'  ><b>CARROS MIXTOS</b></th>  </tr>"

@@ -16,7 +16,8 @@
                         error: function (error) 
                         {
                          $('body').loadingModal('hide');
-                         alert("HA OCURRIDO UN ERROR, INTENTE DE NUEVO.")
+                        // alert("HA OCURRIDO UN ERROR, INTENTE DE NUEVO.")
+                        aviso_generico(2,'HA OCURRIDO UN ERROR, INTENTE DE NUEVO.');
                         }
                 });  
     }

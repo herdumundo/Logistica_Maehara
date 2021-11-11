@@ -7,8 +7,14 @@
 <%@page import="clases.controles"%>
 <%@ page session="true" %>
 <%
-HttpSession sesionOk = request.getSession();
+    
+try {
+        HttpSession sesionOk = request.getSession();
 sesionOk.invalidate();request.getSession().invalidate();
 controles.connectSesion.close();
+    } catch (Exception e) {
+    }
+    
+
 %>
 <meta http-equiv="Refresh" content="1;url=index.html">

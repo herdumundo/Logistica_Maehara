@@ -1,19 +1,6 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<%@ page session="true" %>
-<%@include  file="chequearsesion.jsp" %><%
- if (sesionOk.getAttribute("usuario") == null ) 
-    {
-        if(clases.controles.connectSesion==null){
-            
-        }
-        else {
-        clases.controles.connectSesion.close();
-        }
-        response.sendRedirect("login_sesion.jsp");
-    }
 
-%>
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,17 +28,13 @@
         <link href="estilos/css/checkboxes.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/buttons.bootstrap4.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/DateTimePicker.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
         <link href="estilos/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/jquery-ui.multidatespicker.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/modal.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/jquery.loadingModal.css" rel="stylesheet" type="text/css"/>
         <link href="static/css/app.css" rel="stylesheet">
-         
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
- 
- 
- 
 </head>
 
 <body >
@@ -90,7 +73,7 @@
 
 				<div class="navbar-collapse collapse">
 					<ul class="navbar-nav navbar-align">
-                                            <li class="nav-item" onclick="openFullscreen()">
+						 <li class="nav-item">
 							<a class="nav-icon js-fullscreen d-none d-lg-block" href="#">
 								<div class="position-relative">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize align-middle"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
@@ -109,7 +92,7 @@
 							<div class="dropdown-menu dropdown-menu-end">
 							 
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#basiceModal"> <i class="align-middle" data-feather="log-out"></i> Salir</a>
+								<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"> <i class="align-middle" data-feather="log-out"></i> Salir</a>
 							</div>
 						</li>
 					</ul>
@@ -130,45 +113,30 @@
                     </div>
                     
                     
-         
-         
-<div class="modal fade" id="basiceModal" tabindex="-1" aria-labelledby="basicModalLabel" aria-hidden="true">
- 
-  <div class="modal-dialog">
- 
-    <div class="modal-content">
- 
-      <div class="modal-header">
- 
-        <h5 class="modal-title" id="basicModalLabel">Cierre de sesión</h5>
- 
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
- 
-      </div>
- 
-      <div class="modal-body">
- 
-        ¿Desea salir de la aplicación? 
-      </div>
- 
-      <div class="modal-footer">
- 
-  
-        <a class="btn btn-primary" href="cerrarsesion.jsp">Si</a>
-
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>       
- 
-      </div>
- 
-    </div>
- 
-  </div>
- 
-</div>
-            
+                    
+                    
+                    
+                    
 			 
 		</div>
-	</div> 
+	</div>
+ <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Preparado para salir?</h5>
+      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">Selecciona "Salir" si realmente desea terminar la sesion actual.</div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+      <a class="btn btn-primary" href="cerrarsesion.jsp">Salir</a>
+    </div>
+      </div>
+    </div>
+  </div>
     <script src="static/js/app.js"></script>
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
     <script src="js/dataTables.js" type="text/javascript"></script>

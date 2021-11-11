@@ -14,7 +14,36 @@
     var cantidad_total_cchh             =0;
     var cantidad_total_ovo              =0;
     var cantidad_total                  =0;  
-        
+    var elem = document.documentElement;
+    var pantalla="SI";
+function openFullscreen() {
+    
+    if(pantalla=="SI")
+    {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+          elem.msRequestFullscreen();
+        }
+      pantalla="NO";
+    }
+    
+    else if(pantalla=="NO")
+    {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+          document.msExitFullscreen();
+        }
+        pantalla="SI";
+    }
+}  
+ 
+
     $(document).ready(function()
     {
         $('body').loadingModal({text: 'Consultando...', 'animation': 'wanderingCubes'});
@@ -55,7 +84,7 @@
                  $("#contenido_grillas").html(res.grilla +" "+ res.grilla_mixto  );
                   seleccionar_todo_input();
                
-                
+              //  $("#tb_preembarque").DataTable();
                 $('body').loadingModal('hide');
                 $("#btn_atras").show();
                 solo_numeros_td();//LAS CELDAS SOLO PERMITIRAN NUMEROS. 
@@ -897,7 +926,7 @@
                 }
                 else if (formulario=='FACTURA')
                 {
-                    ir_pagina('contenedor_pedidos_generados.jsp');                
+                    ir_pagina('contenedor_pedidos_facturar.jsp');                
                 }
        }
        else {
@@ -1222,7 +1251,7 @@
                             <select  name = 'cbox_factura' id='cbox_factura' class='form - control'    required>\n\
                             </select ><br><br>\n\
                         </div > \n\
-                         <br><br><br><input type='submit' value='REGISTRAR' class='form-control bg-success btn color_letra' >  \n\
+                         <br><br><br><input type='submit' style='font-weight:bold'  value='REGISTRAR' class='form-control bg-success btn color_letra' >  \n\
                     </form> ";
         Swal.fire({
         title: 'Registrar factura al pedido',

@@ -59,10 +59,10 @@
             + " <th style='color: #fff; background: green;'>Acep</th>      <th style='color: #fff; background: green;'>Cant</th>"
             + " <th style='color: #fff; background: green;'>Invo</th>      <th style='color: #fff; background: green;'>Cant</th></tr>"
             + "</thead> <tbody >";
-    int cont_fila=0;
-    ResultSet rs,rs2,rs3,rs4;
-     rs = fuente.obtenerDato(" exec mae_log_select_pedidos_gen @id="+id+"  ");
-       while(rs.next())
+        int cont_fila=0;
+        ResultSet rs,rs2,rs3,rs4;
+        rs = fuente.obtenerDato(" exec mae_log_select_pedidos_gen @id="+id+"  ");
+        while(rs.next())
         {
             String edit1="";//contenteditable='true'
             String edit2="";//contenteditable='true'
@@ -130,8 +130,6 @@
             }
               
                 
-                
-                
            grilla_html=grilla_html+
            "<tr   >"
                    + "<td   >"+rs.getString(1)+"</td>"
@@ -174,7 +172,7 @@
                 + "                 where cod_carrito =  cod for XML path('') ),1,1,'')as fecha_involucrada "
                 + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA "
                 + "     FROM v_mae_stock_linea_cajones12 with (nolock) WHERE cod_carrito not in ("
-                + " select cod_carrito from  mae_log_ptc_det_pedidos with (nolock) where estado=1 and u_medida='MIXTO' and id_cab not in("+id+")) ) T ORDER BY 2,3");
+                + " select cod_carrito from  mae_log_ptc_det_pedidos with (nolock) where estado IN (1,2) and u_medida='MIXTO' and id_cab not in("+id+")) ) T ORDER BY 2,3");
        while(rs2.next())
         {
             grilla_html2=grilla_html2+ "<tr>" + "<td  >"+rs2.getString(1 )+"</td>"+  "<td   >"+rs2.getString(2)+"</td>"+   "<td   >"+rs2.getString(3)+"</td>"+ 
@@ -192,7 +190,7 @@
            
        String carros_mixtos="";
        int i=0;
-       rs4 = fuente.obtenerDato(" select cod_carrito from  mae_log_ptc_det_pedidos with (nolock) where estado=1 and u_medida='MIXTO' and id_cab   in("+id+" )");
+       rs4 = fuente.obtenerDato(" select cod_carrito from  mae_log_ptc_det_pedidos with (nolock) where estado IN (1,2) and u_medida='MIXTO' and id_cab   in("+id+" )");
        while(rs4.next())
         {
             if(i==0){
