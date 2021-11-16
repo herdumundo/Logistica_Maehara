@@ -16,6 +16,10 @@
     var cantidad_total                  =0;  
     var elem = document.documentElement;
     var pantalla="SI";
+    
+    
+    
+    
 function openFullscreen() {
     
     if(pantalla=="SI")
@@ -48,6 +52,8 @@ function openFullscreen() {
     {
         $('body').loadingModal({text: 'Consultando...', 'animation': 'wanderingCubes'});
         ir_menu_principal();
+        
+      
         $('body').loadingModal('hide');
                        
     });
@@ -83,8 +89,28 @@ function openFullscreen() {
                 //FIRT ES EL DIV EN DONDE SE ALMACENA LA GRILLA DE CARROS ENTERO, EL SECOND ALMACENA LOS CARROS MIXTOS.
                  $("#contenido_grillas").html(res.grilla +" "+ res.grilla_mixto  );
                   seleccionar_todo_input();
-               
-              //  $("#tb_preembarque").DataTable();
+               if(tipo!=3){
+                   
+            
+              $("#tb_preembarque").DataTable({
+            scrollY:        "500px",
+        scrollX:        true,
+        scrollCollapse: true,
+        paging:         false,
+        fixedColumns:   {
+            left:1
+        },
+         /*          scrollY:        '50vh',
+        scrollCollapse: true,
+         "pageLength": 100,
+        paging:         false
+                        "scrollX": true,
+                     "ordering": false, */
+                    
+                        "language": {
+              "sUrl": "js/Spanish.txt"
+        } 
+            });   }
                 $('body').loadingModal('hide');
                 $("#btn_atras").show();
                 solo_numeros_td();//LAS CELDAS SOLO PERMITIRAN NUMEROS. 
@@ -96,7 +122,7 @@ function openFullscreen() {
                     var capacidad=arr[0];
                     $("#"+res.cod_camion).attr({"selected": true});//SELECCIONA PARA PRIMERA OPCION
                     $("#"+res.cod_chofer).attr({"selected": true});//SELECCIONA PARA PRIMERA OPCION
-                    
+                    $('#txt_obs').val(res.obs); //AQUI TRAE SOLO LOS TIPOS DE HUEVOS.
                     
                     
                     if(tipo==2)// 
@@ -110,8 +136,11 @@ function openFullscreen() {
                         $('#validacion_tipos').val(res.validacion_tipos); //AQUI TRAE SOLO LOS TIPOS DE HUEVOS.
                         
                         
+                        document.getElementById('txt_obs').disabled = true;// SE DENIEGA LA SELECCION DEL CAMION.
                         document.getElementById('cbox_camion').disabled = true;// SE DENIEGA LA SELECCION DEL CAMION.
                         document.getElementById('cbox_chofer').disabled = true;// SE DENIEGA LA SELECCION DEL CHOFER.
+                        
+                        
                         area=res.area;// SE RECUPERA EL AREA
                     }
                     if(res.carros_mixtos.length>0)//ESTE PROCESO, NO DEBE ENTRAR AL GENERAR EL PEDIDO, YA QUE EL JSON NO CONTIENE ESTE VALOR.
@@ -939,6 +968,10 @@ function openFullscreen() {
             if(formulario=='PEDIDOS'){
                 actualizar_celdas(celdas);
             }
+            else if(formulario=='EDITAR'){
+                actualizar_celdas(celdas);
+            }
+
           
        }
        
@@ -1110,7 +1143,7 @@ function openFullscreen() {
                 $.ajax({
                 type: "POST",
                 url: cruds+pagina,
-                data: ({id_camion:id_camion,cantidad_total:cantidad_total,contenido:contenido+contenido_mixto,id_pedido:$('#id_pedido').val(),id_chofer:$('#cbox_chofer').val()}),
+                data: ({id_camion:id_camion,cantidad_total:cantidad_total,contenido:contenido+contenido_mixto,id_pedido:$('#id_pedido').val(),id_chofer:$('#cbox_chofer').val(),obs:$('#txt_obs').val()}),
                 beforeSend: function() 
                 {
                     Swal.fire({
@@ -1313,7 +1346,7 @@ function openFullscreen() {
 
   }
   
-  function cargar_cantidades(){
+    function cargar_cantidades(){
       
         $.ajax({
                     type: "POST",
@@ -1347,7 +1380,6 @@ function openFullscreen() {
                     });
   }
   
-  
     function consultar_cantidades(){
       
         $.ajax({
@@ -1380,7 +1412,6 @@ function openFullscreen() {
                     });
   }
   
-  
     function sumar_tipos_huevos(tipoA,tipoB,tipoC,tipoD,tipoS,tipoJ){
          
          $('#txt_tipo_ac').val(tipoA);
@@ -1389,14 +1420,20 @@ function openFullscreen() {
          $('#txt_tipo_dc').val(tipoD);
          $('#txt_tipo_sc').val(tipoS);
          $('#txt_tipo_jc').val(tipoJ);
-         
-         
+          
         var A=  $('#txt_tipo_a').val();
         var B=  $('#txt_tipo_b').val();
         var C=  $('#txt_tipo_c').val();
         var D=  $('#txt_tipo_d').val();
         var S=  $('#txt_tipo_s').val();
         var J=  $('#txt_tipo_j').val();
+        
+            $('#txt_tipo_af').val((parseInt(A)-parseInt(tipoA)) );
+            $('#txt_tipo_bf').val((parseInt(B)-parseInt(tipoB)));
+            $('#txt_tipo_cf').val((parseInt(C)-parseInt(tipoC)));
+            $('#txt_tipo_df').val((parseInt(D)-parseInt(tipoD)));
+            $('#txt_tipo_sf').val((parseInt(S)-parseInt(tipoS)));
+            $('#txt_tipo_jf').val((parseInt(J)-parseInt(tipoJ)));
         
         var ac=tipoA;
         var bc=tipoB;
@@ -1489,7 +1526,6 @@ function openFullscreen() {
         
     }
     
-    
     function seleccionar_todo_input()
     {
         $("input").blur(function() 
@@ -1530,4 +1566,52 @@ function openFullscreen() {
             $('#txt_tipo_mixto').val($('#txt_tipo_mixtoc').val());
         }
 
+    }
+    
+    
+     
+
+    function filtro_reporte(tipo){
+        switch (tipo) 
+        {
+            case "7":
+                $("#contenedor_fechas").show();
+            break;
+            case "1":
+                $("#contenedor_fechas").hide();
+            break;
+            case "2":
+                $("#contenedor_fechas").hide();
+            break;
+            case "5":
+                $("#contenedor_fechas").show();
+            break;
+                 
+        }
+      
+    }
+    
+    function buscar_reporte(){
+        
+        
+         $.ajax({
+                    type: "POST",
+                    url: ruta_consultas+'generar_grilla_reportes.jsp',
+                    data:({estado:$('#cbox_tipo').val(),fecha_desde:$('#desde').val(),fecha_hasta:$('#hasta').val()}),
+                    beforeSend: function() 
+                    {
+                        $('body').loadingModal('show');
+                        $('#div_grilla').html("");    
+                    },           
+                    success: function (res) 
+                    {
+                            $('#div_grilla').html(res.grilla);  
+                            $('body').loadingModal('hide');
+                    },
+                    error: function (error) 
+                    {
+                        $('body').loadingModal('hide');
+                    }
+                }); 
+        
     }

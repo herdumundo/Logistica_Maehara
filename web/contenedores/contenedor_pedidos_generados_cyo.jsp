@@ -98,7 +98,7 @@ heightStyle: "content"
                        int comprobar_mixto=0;
                         rs4 = fuente.obtenerDato("  SELECT clasificadora ,carrito as carro ,  stuff(( select   ','+  [tipo_huevo] + ':'+convert(varchar,[cantidad])    "
                                 + " from mae_log_ptc_det_mixtos_pedidos with (nolock)  where carro =  carrito for XML path('') ),1,1,'')as cajones  "
-                                + "FROM  (  select clasificadora,carro as carrito,tipo_huevo,cantidad from mae_log_ptc_det_mixtos_pedidos where id_cab= "+id+"   )  T  "
+                                + "FROM  (  select clasificadora,carro as carrito,tipo_huevo,cantidad from mae_log_ptc_det_mixtos_pedidos where id_cab= "+id+"  and clasificadora='"+area+"' and estado=2  )  T  "
                                 + "  group by clasificadora ,carrito");
 
                         while (rs4.next())
@@ -118,8 +118,10 @@ heightStyle: "content"
                     <tbody>
                   <%
                         rs3 = fuente.obtenerDato("  SELECT clasificadora ,carrito as carro ,  stuff(( select   ','+  [tipo_huevo] + ':'+convert(varchar,[cantidad])    "
-                                + " from mae_log_ptc_det_mixtos_pedidos with (nolock)  where carro =  carrito for XML path('') ),1,1,'')as cajones  "
-                                + "FROM  (  select clasificadora,carro as carrito,tipo_huevo,cantidad from mae_log_ptc_det_mixtos_pedidos where id_cab= "+id+"   )  T  "
+                                + " from mae_log_ptc_det_mixtos_pedidos with (nolock)  where ESTADO=2 AND carro =  carrito for XML path('') ),1,1,'')as cajones  "
+                                + "FROM  (  select clasificadora,carro as carrito,tipo_huevo,cantidad "
+                                + "         from mae_log_ptc_det_mixtos_pedidos where id_cab= "+id+"   and clasificadora='"+area+"'  and estado =2 "
+                                        + ")  T  "
                                 + "  group by clasificadora ,carrito");
 
                         while (rs3.next())

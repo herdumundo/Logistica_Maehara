@@ -9,7 +9,7 @@
     clases.controles.connectarBD();
     fuente.setConexion(clases.controles.connect);
     ResultSet rs,rs2;
-    rs = fuente.obtenerDato("select * from  maehara.dbo.[@CAMIONES] where u_estado='Activo'");
+    rs = fuente.obtenerDato("select * from  maehara.dbo.[@CAMIONES] where u_estado='Activo' and   u_desc<>'' ");
     rs2 = fuente.obtenerDato("select code,name  from maehara.dbo.[@CHOFERES] where U_estado='activo'");
 
 %>
@@ -23,7 +23,7 @@
     <select id="cbox_camion" class="btn btn-dark"  style="font-weight: bold;color:white;" onchange="separar_codigo_camion();">
         <option value="-">CAMION</option>
         <%while(rs.next())
-        { %><option id="<%=rs.getString("u_capacidad")%>_<%=rs.getString("code")%>" value="<%=rs.getString("u_capacidad")%>_<%=rs.getString("code")%>"><%=rs.getString("code")%>-<%=rs.getString("name")%> </option><%  } %>
+        { %><option id="<%=rs.getString("u_capacidad")%>_<%=rs.getString("code")%>" value="<%=rs.getString("u_capacidad")%>_<%=rs.getString("code")%>"><%=rs.getString("code")%>-<%=rs.getString("u_desc")%> </option><%  } %>
     </select>
      <a style="font-weight: bold;color:black">SELECCIONE CHOFER</a> 
     <select id="cbox_chofer" class="btn btn-dark"  style="font-weight: bold;color:white;" onchange="separar_codigo_camion();">
@@ -49,6 +49,8 @@
             <input type="submit" value="GENERAR REPORTE" class="form-control col bg-dark "  style="font-weight: bold;color:white;"   >
 
        </form> <br>
+       
+       <input type="text" placeholder="Observación (Opcional)" id="txt_obs" class="form-control"><br> 
      
           <div id="contenido_grillas">
     

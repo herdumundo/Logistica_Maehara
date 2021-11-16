@@ -180,12 +180,14 @@
         }
        
        String cod_camion="";
+       String obs="";
        String cod_chofer="";
            rs3 = fuente.obtenerDato(" select * from mae_log_pct_cab_pedidos with (nolock) WHERE ID="+id);
        while(rs3.next())
         {
             cod_camion=rs3.getString("cantidad")+"_"+rs3.getString("id_camion");
             cod_chofer=rs3.getString("id_chofer");
+            obs=rs3.getString("obs");
         }
            
        String carros_mixtos="";
@@ -212,5 +214,6 @@
         ob.put("cod_chofer",cod_chofer);
         ob.put("carros_mixtos",carros_mixtos);
         ob.put("id_pedido",id);
+        ob.put("obs",obs);
         
         out.print(ob);  %>         

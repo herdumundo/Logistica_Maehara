@@ -30,9 +30,6 @@
         <link href="estilos/css/sweetalert.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/styles_loading.css" rel="stylesheet">  
         <link href="estilos/css/bootstrap4-toggle.min.css" rel="stylesheet" type="text/css"/>
-         <link href="lib/themes/main.css?v=1.0.2" rel="stylesheet" />
-        <link href="lib/themes/default.css?v=1.0.2" rel="stylesheet" id="theme_base" />
-        <link href="lib/themes/default.date.css?v=1.0.2" rel="stylesheet" id="theme_date" />
         <link href="estilos/css/colores.css" rel="stylesheet" type="text/css"/>
         <link href="estilos/css/parpadeo.css?v=1.1.0" rel="stylesheet" type="text/css"/>
         <link href="estilos/efecto_boton.css" rel="stylesheet" type="text/css"/>
@@ -50,6 +47,11 @@
          
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
  
+        
+        
+        
+         
+
  
  
 </head>
@@ -190,9 +192,7 @@
     <script src="js/multiselect.js"></script>
     <script src="js/bootstrap4-toggle.js" type="text/javascript"></script>
     <script src="js/swetalert_net.js" type="text/javascript"></script>
-    <script src="lib/picker.js?v=1.0.0"></script>
-    <script src="lib/picker.date.js?v=1.1.0"></script>
-    <script src="lib/legacy.js?v=1.1.0"></script>
+  
     <script src="js/grilla.js" type="text/javascript"></script>
      
     <script src="js/multi_select.js" type="text/javascript"></script>
@@ -200,10 +200,22 @@
     <script src="js/modal.js" type="text/javascript"></script>
     <script src="js/dataTables.rowGroup.js" type="text/javascript"></script>
     <script src="js/jquery.loadingModal.js" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/4.0.1/js/dataTables.fixedColumns.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    <script src="js/controladores.js?v=1.0" type="text/javascript"></script>
-    <script src="js/controladores_viajes.js?v=1.0" type="text/javascript"></script>
+    <script src="js/controladores.js?v=1.3" type="text/javascript"></script>
+    <script src="js/controladores_viajes.js?v=1.3" type="text/javascript"></script>
     <script src="js/funciones.js" type="text/javascript"></script>
+    
+            
+
+    
+    
+    
+    
+    
+    
+     
+ 
 </body>
 
 </html>

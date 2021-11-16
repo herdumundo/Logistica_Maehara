@@ -29,54 +29,72 @@
     String fp_d="N/A";
     String fp_s="N/A";
     String fp_j="N/A";
+    String cant_a="0";
+    String cant_b="0";
+    String cant_c="0";
+    String cant_d="0";
+    String cant_s="0";
+    String cant_j="0";
     String style_a="style='display:none'";
     String style_b="style='display:none'";
     String style_c="style='display:none'";
     String style_d="style='display:none'";
     String style_s="style='display:none'";
     String style_j="style='display:none'";
-     rs3 = fuente.obtenerDato("  select min(convert(date,fecha_puesta)) as fecha_puesta ,tipo_huevo from  v_mae_preembarque  with(nolock)  group by tipo_huevo  ");
-       while(rs3.next())
+     //rs3 = fuente.obtenerDato("  select min(convert(date,fecha_puesta)) as fecha_puesta ,tipo_huevo from  v_mae_preembarque  with(nolock)  group by tipo_huevo  ");
+     rs3 = fuente.obtenerDato("  select min(convert(date,fecha_puesta)) as fecha_puesta ,tipo_huevo ,SUM(cantidad) AS cantidad from [v_mae_log_stock_1] as cantidad  with(nolock)  group by tipo_huevo  ");
+    
+     
+      
+     while(rs3.next())
         {
             if(rs3.getString("tipo_huevo").equals("A")){
               fp_a=  rs3.getString("fecha_puesta");
               style_a="";
+              cant_a= rs3.getString("cantidad");
             }
             else if(rs3.getString("tipo_huevo").equals("B")){
               fp_b=  rs3.getString("fecha_puesta");
+              cant_b= rs3.getString("cantidad");
               style_b="";
             }
              else if(rs3.getString("tipo_huevo").equals("C")){
               fp_c=  rs3.getString("fecha_puesta");
+              cant_c= rs3.getString("cantidad");
               style_c="";
             }
              else if(rs3.getString("tipo_huevo").equals("D")){
               fp_d=  rs3.getString("fecha_puesta");
+              cant_d= rs3.getString("cantidad");
               style_d="";
             }
              else if(rs3.getString("tipo_huevo").equals("S")){
               fp_s=  rs3.getString("fecha_puesta");
+              cant_s= rs3.getString("cantidad");
               style_s="";
             }
              else if(rs3.getString("tipo_huevo").equals("J")){
               fp_j=  rs3.getString("fecha_puesta");
+              cant_j= rs3.getString("cantidad");
               style_j="";
             }
         }
     
-    String cabecera="<table><thead><tr><th>TIPO</th><th>PEDIDO</th><th>CARGADOS</th><th>FECHA PUESTA VIEJA</th><tbody >"
-            + "<tr  "+style_a+"><td>A</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_a'   ></td><td><input type='text' style='font-weight: bold; color: black;' value='0' readonly  id='txt_tipo_ac'   ></td>                       <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_a+"' readonly     ></td>   </tr>"
-            + "<tr  "+style_b+"><td>B</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_b'    ></td><td><input type='text'     style='font-weight: bold; color: black;'  value='0' readonly  id='txt_tipo_bc'  ></td>                  <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_b+"' readonly     ></td>   </tr>"
-            + "<tr  "+style_c+"><td>C</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_c'    ></td><td><input type='text'  style='font-weight: bold; color: black;'  value='0'  readonly  id='txt_tipo_cc'  ></td>                    <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_c+"' readonly   ></td>   </tr>"
-            + "<tr  "+style_d+"><td>D</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_d'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0'  readonly  id='txt_tipo_dc'  ></td>                   <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_d+"' readonly     ></td>   </tr>"
-            + "<tr  "+style_s+"><td>S</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_s'    ></td><td><input type='text'    style='font-weight: bold; color: black;' value='0' readonly   id='txt_tipo_sc'  ></td>                   <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_s+"' readonly     ></td>   </tr>"
-            + "<tr  "+style_j+"><td>J</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_j'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_jc'  ></td>                   <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_j+"' readonly     ></td>   </tr>"
-            + "<tr><td>MIXTO</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_mixto'   ></td><td><input type='text'    style='font-weight: bold; color: black;'  value='0' readonly   id='txt_tipo_mixtoc'  ></td>   </tr>"
+    String cabecera="<table><thead><tr><th>TIPO</th><th>PEDIDO</th><th>CARGADOS</th><th>FALTANTES</th><th>FECHA PUESTA VIEJA</th><th>DISPONIBLE</th><tbody >"
+            + "<tr  "+style_a+"><td>A</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_a'   ></td>   <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_ac'        ></td>      <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_af'        ></td>                       <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_a+"' readonly     ></td><td><input type='text' style='font-weight: bold; color: black;' value='"+cant_a+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_b+"><td>B</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_b'    ></td>  <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_bc'        ></td>      <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_bf'        ></td>            <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_b+"' readonly     ></td> <td><input type='text' style='font-weight: bold; color: black;' value='"+cant_b+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_c+"><td>C</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_c'    ></td>  <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_cc'        ></td>      <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_cf'        ></td>              <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_c+"' readonly     ></td> <td><input type='text' style='font-weight: bold; color: black;' value='"+cant_c+"' readonly   ></td>   </tr>"
+            + "<tr  "+style_d+"><td>D</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_d'    ></td>  <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_dc'        ></td>      <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_df'        ></td>             <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_d+"' readonly     ></td><td><input type='text' style='font-weight: bold; color: black;' value='"+cant_d+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_s+"><td>S</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_s'    ></td>  <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_sc'        ></td>      <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_sf'        ></td>             <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_s+"' readonly     ></td> <td><input type='text' style='font-weight: bold; color: black;' value='"+cant_s+"' readonly     ></td>   </tr>"
+            + "<tr  "+style_j+"><td>J</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_j'   ></td>   <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_jc'        ></td>      <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_jf'        ></td>             <td><input type='text' style='font-weight: bold; color: black;' value='"+fp_j+"' readonly     ></td>  <td><input type='text' style='font-weight: bold; color: black;' value='"+cant_j+"' readonly     ></td>   </tr>"
+            + "<tr><td>MIXTO</td><td><input type='number' value='0' style='font-weight: bold; color: black;' class='txt_cargas' id='txt_tipo_mixto'   ></td>        <td><input type='text'  style='font-weight: bold; color: black;'    value='0'   readonly    id='txt_tipo_mixtoc'    ></td>   </tr>"
             + "</tbody > </tr></thead> </table>"
             + " <div id='div_grilla' style='  margin: left;'  class='table_wrapper' >"
             + "<div id='container' style='width: 2000px; margin: auto;'>"
             + "<div id='first' style=' width: 1800px; float: left; height: 500px;'> "
-            + "<table id='tb_preembarque' class='table table-bordered table-hover' style='width:100%'>"
+            
+            
+            + "<table id='tb_preembarque' class='stripe row-border order-column' style='width:100%'>"
             + "<thead>"
               + " <tr>"
             + "<th rowspan='2'  style='color: #fff; background: gray;'><b>Fecha puesta</b></th>  "
@@ -306,7 +324,7 @@
                 + "from [v_mae_stock_linea_mixtos] with (nolock) "
                 + "                 where cod_carrito =  cod for XML path('') ),1,1,'')as fecha_involucrada "
                 + "                 FROM  ( SELECT cod_carrito as cod,clasificadora_ACTUAL ,FECHA_PUESTA FROM v_mae_stock_linea_cajones12 with(nolock) "
-                + "WHERE cod_carrito not in (select cod_carrito from  mae_log_ptc_det_pedidos with(nolock) where estado=1 and u_medida='MIXTO') ) T ORDER BY 2,3");
+                + "WHERE cod_carrito not in (select cod_carrito from  mae_log_ptc_det_pedidos with(nolock) where estado in (1,2) and u_medida='MIXTO') ) T ORDER BY 2,3");
        while(rs2.next())
         {
             grilla_html2=grilla_html2+ 

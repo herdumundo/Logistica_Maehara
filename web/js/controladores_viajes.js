@@ -11,8 +11,10 @@
                         success: function (res) 
                         {
                             $("#contenido_modulos").html(res);
+
                             $('body').loadingModal('hide');
-                        },
+                            
+                         },
                         error: function (error) 
                         {
                          $('body').loadingModal('hide');
@@ -26,7 +28,7 @@
     {
          $.ajax({
                     type: "POST",
-                    url: ruta_contenedores+'contenedor_menu.jsp',
+                    url: ruta_consultas+'generar_menu.jsp',
                     beforeSend: function() 
                     {
                         $('body').loadingModal('show');
@@ -35,8 +37,26 @@
                     success: function (res) 
                     {
                         $("#contenido_modulos").html("");
-                        $('#contenido_principal').html(res);  
+                        $('#contenido_principal').html(res.menu);  
                         $('body').loadingModal('hide');
+                        
+                        
+                           $('#div_cuadro_pedido').click(function(){
+            ir_pedido(1); 
+        });
+         $('#div_cuadro_pedido_update').click(function(){
+            ir_pagina('contenedor_pedidos_generados_menu.jsp');
+        });
+         $('#div_cuadro_pedido_rep').click(function(){
+            
+             ir_pagina('contenedor_reporte.jsp')    ;     
+         });
+         $('#div_cuadro_facturacion').click(function(){
+             ir_pagina('contenedor_pedidos_facturar.jsp')    ;     
+        });
+         $('#div_cuadro_cyo').click(function(){
+             ir_pagina('contenedor_pedidos_generados_cyo.jsp')    ;     
+        });
                     },
                     error: function (error) 
                     {
@@ -544,5 +564,4 @@
 
       
     }
-    
     

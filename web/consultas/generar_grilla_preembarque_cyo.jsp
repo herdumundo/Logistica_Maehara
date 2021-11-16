@@ -253,32 +253,41 @@
         }
        String cod_camion="";
        String cantidad_area="";
+       String obs="";
           
-        rs3 = fuente.obtenerDato(" select id,fecha_registro,camion,sum(cantidad) as cantidad,concat(cantidad_camion,'_',camion) as combo,id_chofer "
+        rs3 = fuente.obtenerDato(" select id,fecha_registro,camion,sum(cantidad) as cantidad,concat(cantidad_camion,'_',camion) as combo,id_chofer,obs "
                 + "from "
 			+ " ("
-			+ " 	select id_cab as id, FORMAT(b.fecha_registro, 'dd/MM/yyyy HH:mm') as fecha_registro,code as camion,1 as cantidad, "
-                        + " carro, b.cantidad as cantidad_camion,b.id_chofer"
-			+ "   from mae_log_ptc_det_mixtos_pedidos a "
-			+ "   inner join mae_log_pct_cab_pedidos b on a.id_cab=b.id"
-			+ "    inner join maehara.dbo.[@CAMIONES] c on b.id_camion=c.Code collate database_default "
-			+ "   where a.estado=2 and a.clasificadora='"+area_form+"' "
-			+ "   group by a.id_cab,b.fecha_registro,code,name ,carro,b.cantidad,b.id_chofer"
-			+ "  union all"
-			+ "  select distinct a.id,FORMAT (a.fecha_registro, 'dd/MM/yyyy HH:mm') as fecha_registro,code as camion  ,"
-			+ " 	sum(c.cantidad) as cantidad, 0 as carro , a.cantidad as cantidad_camion ,a.id_chofer "
-                                + "from mae_log_pct_cab_pedidos a    "
-			+ " 	inner join maehara.dbo.[@CAMIONES] b     on a.id_camion=b.Code collate database_default     and a.estado IN (2)     "
-			+ " 	inner join mae_log_ptc_det_pedidos c on a.id=c.id_cab and c.estado<>4 and c.clasificadora='"+area_form+"' "
-			+ " 	and a.id in ( select distinct id_cab from mae_log_ptc_det_pedidos where estado=2 and clasificadora='"+area_form+"') "
-                        + "  group by a.id,a.fecha_registro,code,name,a.cantidad ,a.id_chofer) t  WHERE ID= "+id+" "
-			+ " group by  id,fecha_registro,camion,cantidad_camion,id_chofer ");
+			+ " 	select "
+                + "                 id_cab as id, FORMAT(b.fecha_registro, 'dd/MM/yyyy HH:mm') as fecha_registro,code as camion,1 as cantidad, "
+                        + "         carro, b.cantidad as cantidad_camion,b.id_chofer, b.obs"
+			+ "     from "
+                + "                 mae_log_ptc_det_mixtos_pedidos a "
+			+ "         inner join mae_log_pct_cab_pedidos b on a.id_cab=b.id"
+			+ "         inner join maehara.dbo.[@CAMIONES] c on b.id_camion=c.Code collate database_default "
+			+ "     where "
+                + "                 a.estado=2 and a.clasificadora='"+area_form+"' "
+			+ "     group by "
+                        + "         a.id_cab,b.fecha_registro,code,name ,carro,b.cantidad,b.id_chofer,b.obs"
+			+ "     union all"
+			+ "     select "
+                        + "         distinct a.id,FORMAT (a.fecha_registro, 'dd/MM/yyyy HH:mm') as fecha_registro,code as camion  ,"
+			+ "         sum(c.cantidad) as cantidad, 0 as carro , a.cantidad as cantidad_camion ,a.id_chofer,a.obs "
+                        + "     from "
+                        + "         mae_log_pct_cab_pedidos a    "
+			+ "         inner join maehara.dbo.[@CAMIONES] b     on a.id_camion=b.Code collate database_default     and a.estado IN (2)     "
+			+ "         inner join mae_log_ptc_det_pedidos c on a.id=c.id_cab and c.estado<>4 and c.clasificadora='"+area_form+"' "
+			+ "         and a.id in ( select distinct id_cab from mae_log_ptc_det_pedidos where estado=2 and clasificadora='"+area_form+"') "
+                        + "     group by a.id,a.fecha_registro,code,name,a.cantidad ,a.id_chofer,a.obs"
+                                + ") t  WHERE ID= "+id+" "
+            + " group by  id,fecha_registro,camion,cantidad_camion,id_chofer,obs ");
          
            while(rs3.next())
         {
             cod_camion=rs3.getString("combo");
             cantidad_area=rs3.getString("cantidad");
             cod_chofer=rs3.getString("id_chofer");
+            obs=rs3.getString("obs");
 
         }
            
@@ -311,6 +320,10 @@
         ob.put("id_pedido",id);
         ob.put("area",area_form);
         ob.put("cod_chofer",cod_chofer);
+        ob.put("obs",obs);
+        
+        
+        
         out.print(ob);
           } catch (Exception e) {
               String error=e.getMessage();
