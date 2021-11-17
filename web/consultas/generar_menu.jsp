@@ -1,13 +1,10 @@
 
 <%@page import="org.json.JSONObject"%>
 <%@ page language="java" import="java.sql.*" errorPage="error.jsp" %>
-<jsp:useBean id="fuente" class="clases.fuentedato" scope="page"/>
-<%@include  file="../chequearsesion.jsp" %>
+ <%@include  file="../chequearsesion.jsp" %>
 <%@ page contentType="application/json; charset=utf-8" %>
     <%
-        clases.controles.connectarBD();
-        Connection cn = clases.controles.connect;
-	fuente.setConexion(cn);
+   
         JSONObject ob = new JSONObject();
         ob=new JSONObject();
         String contenedor="";
@@ -106,8 +103,6 @@
                
         }
           
-                    cn.close();
-        clases.controles.DesconnectarBD();
         ob.put("menu",menu);
         out.print(ob);
     %>

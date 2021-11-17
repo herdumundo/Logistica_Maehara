@@ -859,6 +859,10 @@ function openFullscreen() {
         });
 
         $('#txt_cargados').val(parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado));
+        
+         $('#txt_restantes').val(parseInt($('#txt_cargados').val())-parseInt($('#txt_disponibilidad').val())) ;
+        
+        
         calculo_mixto_enteros_pedidos();//AQUI SE REALIZA LA SUMA DE TODOS LOS SELECCIONADOS
         sumar_tipos_huevos(tipoA,tipoB,tipoC,tipoD,tipoS,tipoJ);
          
@@ -1079,9 +1083,15 @@ function openFullscreen() {
         $('#td_ovo').html('LAVADOS  TOTAL CARGADOS:'+(parseInt(contador_mixto_pedido_log_lavado)+ parseInt(cantidad_total_ovo)));
         $('#txt_cargados').val(parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado));
         
+        
         var total_mixto_entero=parseInt(cantidad_total)+parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado);
        
          $('#txt_tipo_mixtoc').val(parseInt(contador_mixto_pedido_log_ccha)+parseInt(contador_mixto_pedido_log_cchb)+parseInt(contador_mixto_pedido_log_cchh)+parseInt(contador_mixto_pedido_log_lavado));//TEXTO DEL INGRESADOR DE CANTIDADES TOTALES
+       
+        $('#txt_restantes').val(parseInt($('#txt_cargados').val())-parseInt($('#txt_disponibilidad').val())) ;
+        txt_tipo_mixtoc
+        $('#txt_tipo_mixtof').val(parseInt($('#txt_tipo_mixto').val())-parseInt($('#txt_tipo_mixtoc').val()));//TEXTO DEL INGRESADOR DE CANTIDADES TOTALES
+
         if(parseInt($('#txt_disponibilidad').val())<total_mixto_entero)
         {
             $('#txt_cargados').css('background-color', 'red');

@@ -37,6 +37,7 @@
     
     <a style="font-weight: bold;color:black">DISPONIBILIDAD:</a><input type="text" disabled id="txt_disponibilidad" style="font-weight: bold;color:black" value="0" >
     <a style="font-weight: bold;color:black">CARROS CARGADOS:</a><input type="text" disabled id="txt_cargados" style="font-weight: bold;color:black" value="0" >
+    <a style="font-weight: bold;color:black">CARROS RESTANTES:</a><input type="text" disabled id="txt_restantes" style="font-weight: bold;color:black" value="0" >
     <input type="hidden" id="id_pedido"> 
     <input type="hidden" id="validacion_cantidades"> 
     <input type="hidden" id="validacion_tipos"> 
